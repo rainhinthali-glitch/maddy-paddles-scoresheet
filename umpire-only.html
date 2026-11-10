@@ -1931,7 +1931,6 @@ body.umpire-only #umpireHome .umpire-received{background:#0a192b!important;borde
     <p class="meta" id="gameMeta">GAME 1 • IN PROGRESS</p>
     <div class="row">
       <button class="btn light" onclick="undo()">↩ UNDO</button>
-      <button id="finishButton" class="btn danger" onclick="finishMatch()">MATCH FINISH</button>
     </div>
   </section>
 
@@ -1947,7 +1946,6 @@ body.umpire-only #umpireHome .umpire-received{background:#0a192b!important;borde
 
   <div class="nav">
     <button class="btn light" onclick="resetForNewMatch(); resetOfficialMatchTimer();show('setup')">➕ New</button>
-    <button class="btn light" onclick="show('score')">🏓 Score</button>
     <button class="btn light" onclick="show('history');renderHistory()">📋 History</button>
     <button class="btn light" onclick="returnToUmpireMainMenu()">🏠 Main Menu</button>
   </div>
@@ -2135,8 +2133,6 @@ function resetForNewMatch(){
   if(sendBtnReset){sendBtnReset.disabled=false;sendBtnReset.textContent='SEND RESULT';}
   const sendStatusReset=document.getElementById('maddy-send-result-status');
   if(sendStatusReset)sendStatusReset.textContent='';
-  const finishButtonReset=document.getElementById('finishButton');
-  if(finishButtonReset){finishButtonReset.disabled=false;finishButtonReset.textContent='MATCH FINISH';}
   // Stop all timeout/injury timers and clear their intervals.
   Object.keys(timerIntervals||{}).forEach(k=>clearInterval(timerIntervals[k]));
   Object.keys(injuryIntervals||{}).forEach(k=>clearInterval(injuryIntervals[k]));
@@ -2445,7 +2441,7 @@ function prepareFinish(winner){
   document.getElementById('finishWinner').textContent=
     (winner==='A'?state.a:state.b)+' WINS';
   document.getElementById('finishScore').textContent=state.scoreA+'–'+state.scoreB;
-  document.getElementById('finishButton').focus();
+  document.getElementById('maddy-save-finish-btn').focus();
 }
 function undo(){if(state.pendingWinner||state.paused)return;const last=state.history.pop();if(!last)return;if(Array.isArray(last)){[state.scoreA,state.scoreB]=last;}else{state.scoreA=last.a;state.scoreB=last.b;state.serverTeam=last.serverTeam;state.serverPlayer=last.serverPlayer;state.receiverTeam=last.receiverTeam;state.receiverPlayer=last.receiverPlayer;state.serverNumber=last.serverNumber||1;updateServingDisplay();}updateScore()}
 function finishMatch(){
@@ -2468,8 +2464,6 @@ function finishMatch(){
   if(sendPrompt)sendPrompt.classList.remove('hidden');
   const sendStatus=document.getElementById('maddy-send-result-status');
   if(sendStatus)sendStatus.textContent=rec.onlineMatchId?'Ready to send to Tournament Desk.':'No online Tournament Desk match link was detected. This match is saved locally.';
-  const finishButton=document.getElementById('finishButton');
-  if(finishButton){finishButton.disabled=true;finishButton.textContent='MATCH SAVED';}
 }
 
 function sendMaddyMatchResult(){
@@ -2624,7 +2618,6 @@ function resumePlay(){
 function updateControlFreeze(){
   const disabled=!!state.paused;
   document.querySelectorAll('#score .scorebtn, #score .row .btn').forEach(btn=>{
-    if(btn.id==='finishButton')return;
     btn.disabled=disabled;btn.classList.toggle('disabled',disabled);
   });
   ['roleA','playerA','roleB','playerB','firstServer','firstReceiver'].forEach(id=>{
