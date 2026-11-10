@@ -1,0 +1,3652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PickleScore Umpire">
+
+<title>MADDY PADDLES</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#0b0f14;color:#f3f4f6}
+.app{max-width:520px;margin:auto;min-height:100vh;background:#111827}.top{padding:18px 18px 12px;background:#05070a;color:white}
+.top h1{margin:0;font-size:23px}.top small{opacity:.75}.screen{padding:18px}.card{background:#181e27;border:1px solid #2d3745;border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 2px 14px #00000030}
+label{font-size:12px;font-weight:700;color:#aab4c3;display:block;margin:10px 0 6px}input,select{width:100%;padding:13px;border:1px solid #394554;border-radius:10px;font-size:16px;background:#0f141b;color:#f3f4f6}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.btn{border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:800;cursor:pointer}.primary{background:#f3f4f6;color:#111827}.light{background:#2b3441;color:#f3f4f6}.danger{background:#4a2024;color:#ffb4b4}.disabled{opacity:.55;cursor:not-allowed}
+.scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:10px}.team{border:1px solid #2d3745;border-radius:18px;padding:18px;text-align:center;background:#151b24}.team h2{font-size:18px;margin:0 0 6px}.score{font-size:70px;line-height:1;font-weight:900;margin:14px 0}.scorebtn{width:100%;font-size:20px;padding:18px}.timeout{margin-top:10px;width:100%;font-size:14px;padding:12px}.timer{font-variant-numeric:tabular-nums;margin-top:6px;color:#ff7b7b;font-weight:900}.meta{text-align:center;color:#aab4c3;margin:10px 0 16px;font-weight:700}.nav{position:sticky;bottom:0;background:#111827;border-top:1px solid #2d3745;padding:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.nav button{font-size:13px;padding:12px 6px}.hidden{display:none}.history-item{padding:14px 0;border-bottom:1px solid #2d3745}.history-item:last-child{border:0}.winner{font-weight:900}.pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#2b3441;color:#e5e7eb;font-size:12px;margin-top:5px}
+</style>
+
+<style id="maddy-premium-dark-scoresheet-redesign">
+:root{--mp-bg:#080e0c;--mp-panel:#121c18;--mp-panel2:#1a2822;--mp-line:#304238;--mp-lime:#c7f36b;--mp-muted:#a3b2a8;--mp-ink:#f3f8f1}
+body{background:var(--mp-bg)!important;color:var(--mp-ink)!important}
+.app{background:linear-gradient(180deg,#0b1410 0%,#101a15 100%)!important;max-width:560px!important}
+.top{background:#080e0c!important;border-bottom:1px solid var(--mp-line)!important;padding:20px 18px 15px!important}
+.top h1{letter-spacing:.04em!important;font-weight:950!important}
+.screen{padding:15px!important}
+.card,.serving-setup,.team,.match-timer-compact,.serving-status-card{background:var(--mp-panel)!important;border:1px solid var(--mp-line)!important;border-radius:18px!important;box-shadow:0 10px 28px #0005!important;color:var(--mp-ink)!important}
+label,.meta,.card small{color:var(--mp-muted)!important}
+input,select{background:#0b1410!important;border:1px solid #3a4e42!important;color:var(--mp-ink)!important;border-radius:12px!important}
+.btn{border-radius:13px!important;font-weight:850!important;transition:transform .12s ease,filter .12s ease}
+.btn:active{transform:scale(.98)}
+.btn.primary,.scorebtn{background:var(--mp-lime)!important;color:#142016!important;border:0!important}
+.btn.light{background:#24342b!important;color:#e9f3e9!important;border:1px solid #405649!important}
+.btn.danger{background:#51272a!important;color:#ffd0d0!important;border:1px solid #7d4144!important}
+.scoreboard{gap:10px!important}
+.switch-side-btn{border:1px solid #58705d!important;color:var(--mp-lime)!important;background:linear-gradient(135deg,#24382c,#17251d)!important;letter-spacing:.08em!important;font-size:13px!important;min-height:46px!important}
+.team{padding:15px 12px!important;position:relative!important;overflow:hidden!important}
+.team h2{font-size:14px!important;letter-spacing:.06em!important;color:#eaf4e9!important}
+.score{font-size:clamp(62px,16vw,84px)!important;color:var(--mp-lime)!important;font-weight:950!important;letter-spacing:-.06em!important;font-variant-numeric:tabular-nums!important}
+.scorebtn{font-size:18px!important;padding:15px!important}
+.timeout{font-size:12px!important;padding:11px!important}
+.match-timer-value{color:var(--mp-lime)!important;font-weight:950!important}
+.nav{background:#0b1410!important;border-top:1px solid var(--mp-line)!important;backdrop-filter:blur(12px)}
+.nav .btn{font-size:12px!important}
+#servingMeta{color:var(--mp-lime)!important;line-height:1.45}
+#serveNote{color:var(--mp-muted)!important}
+.mp-serve-panel{margin:12px 0 14px;padding:16px;background:linear-gradient(145deg,#14221b,#0e1712);border:1px solid #3b5144;border-radius:19px;box-shadow:0 12px 28px #0005}
+.mp-serve-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:13px}
+.mp-serve-head strong{font-size:13px;letter-spacing:.1em}
+.mp-live-pill{font-size:10px;font-weight:900;color:#142016;background:var(--mp-lime);padding:6px 9px;border-radius:999px;letter-spacing:.08em}
+.mp-role-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mp-role{background:#0b1410;border:1px solid #34483b;border-radius:14px;padding:12px;min-width:0}
+.mp-role small{display:block;color:var(--mp-muted);font-size:10px;font-weight:900;letter-spacing:.1em;margin-bottom:7px}
+.mp-role b{display:block;font-size:16px;overflow-wrap:anywhere}
+.mp-role .mp-sub{font-size:11px;color:var(--mp-muted);margin-top:4px}
+.mp-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.mp-actions button{min-height:44px;font-size:12px!important;padding:10px 8px!important}
+.mp-manual{margin-top:12px;padding-top:12px;border-top:1px solid #34483b}
+.mp-manual summary{cursor:pointer;color:var(--mp-lime);font-size:12px;font-weight:900;letter-spacing:.06em}
+.mp-manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.mp-manual-grid label{margin:0 0 5px!important;font-size:10px!important}
+.mp-manual-grid select{padding:10px!important;font-size:13px!important}
+.mp-apply{width:100%;margin-top:9px}
+.mp-warning{font-size:10px;color:var(--mp-muted);line-height:1.45;margin:10px 0 0}
+@media(max-width:390px){.screen{padding:12px!important}.team{padding:12px 9px!important}.score{font-size:60px!important}.mp-role b{font-size:14px}}
+</style>
+
+<script>
+(function(global){
+const __mods={}; const __cache={};
+function define(id,fn){__mods[id.replace(/^\.\//,'').replace(/^\//,'')]=fn;}
+function req(id,from){ if(id[0]==='.') { const base=from.split('/'); base.pop(); for(const part of id.split('/')){if(!part||part=='.')continue;if(part==='..')base.pop();else base.push(part)} id=base.join('/'); } id=id.replace(/^\//,''); if(!id.endsWith('.js')) id+='.js'; if(__cache[id])return __cache[id].exports; const m={exports:{}}; __cache[id]=m; if(!__mods[id]) throw new Error('Missing module '+id); __mods[id](m,m.exports,(x)=>req(x,id)); return m.exports; }
+
+define('./QRMode.js',function(module,exports,require){
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+});
+
+define('./QRMath.js',function(module,exports,require){
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+});
+
+define('./QRErrorCorrectLevel.js',function(module,exports,require){
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+});
+
+define('./QRMaskPattern.js',function(module,exports,require){
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+});
+
+define('./QRUtil.js',function(module,exports,require){
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+});
+
+define('./QRPolynomial.js',function(module,exports,require){
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+});
+
+define('./QRRSBlock.js',function(module,exports,require){
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+});
+
+define('./QRBitBuffer.js',function(module,exports,require){
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+});
+
+define('./QR8bitByte.js',function(module,exports,require){
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+});
+
+define('./index.js',function(module,exports,require){
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+});
+
+const QRCodeCore=req('./index.js','/entry.js');
+global.PicklescoreQR={toSVG:function(text,scale=6){
+  const qr=new QRCodeCore(0, 0); // placeholder, patched below
+}};
+global.PicklescoreQR={toSVG:function(text,scale=6){
+  const qr=new QRCodeCore(0,0); // M level is 0 in this library
+  qr.addData(text); qr.make();
+  const n=qr.getModuleCount(), q=4, size=(n+q*2)*scale;
+  let s='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'" shape-rendering="crispEdges">';
+  s+='<rect width="100%" height="100%" fill="#fff"/>';
+  for(let r=-q;r<n+q;r++)for(let c=-q;c<n+q;c++)if(r>=0&&r<n&&c>=0&&c<n&&qr.isDark(r,c))s+='<rect x="'+((c+q)*scale)+'" y="'+((r+q)*scale)+'" width="'+scale+'" height="'+scale+'"/>';
+  return s+'</svg>';
+}};
+})(window);
+</script>
+
+<style>
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}
+.hidden{display:none!important}
+.modal-card{width:min(520px,100%);max-height:94vh;overflow:auto}
+.modal-title{font-size:20px;font-weight:900;margin-bottom:12px}
+.assignment-summary{text-align:center;line-height:1.55;font-weight:800;margin-bottom:12px}
+.qr-box{background:#fff;padding:14px;border-radius:12px;width:min(310px,80vw);min-height:250px;margin:0 auto 12px;display:flex;justify-content:center}
+.qr-box svg{width:100%;height:auto}
+.assignment-id{text-align:center;font-size:12px;color:#aab4c3;margin:8px 0 12px;font-family:monospace}
+.desk-button{margin-top:8px}
+</style>
+
+<style>
+.desk-button{
+  width:100%;
+  min-height:52px;
+  margin:10px 0 8px;
+  font-size:16px;
+  font-weight:800;
+}
+.assignment-help{
+  text-align:center;
+  font-size:12px;
+  color:#aab4c3;
+  margin:0 0 10px;
+}
+</style>
+
+<style>
+.assignment-link{
+  width:100%;
+  box-sizing:border-box;
+  margin:8px 0 12px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #394556;
+  background:#111722;
+  color:#dbe5f2;
+  font-size:11px;
+}
+</style>
+
+<script>
+window.PICKLESCORE_LAUNCH_ORIGIN =
+  localStorage.getItem('picklescore_launch_origin') ||
+  'https://YOUR-PICKLESCORE-DOMAIN.example';
+function setPickleScoreLaunchOrigin(){
+  const current=localStorage.getItem('picklescore_launch_origin')||'';
+  const v=prompt('Enter the HTTPS address where PickleScore is hosted:',current);
+  if(v===null)return;
+  const s=v.trim().replace(/\/+$/,'');
+  if(!/^https:\/\//i.test(s)){
+    alert('Please enter a real HTTPS address, for example https://your-domain.example');
+    return;
+  }
+  localStorage.setItem('picklescore_launch_origin',s);
+  window.PICKLESCORE_LAUNCH_ORIGIN=s;
+  alert('PickleScore match links will now use:\\n'+s);
+}
+</script>
+
+<style>
+.match-link-box{background:#111722;border:1px solid #394556;border-radius:12px;padding:12px}
+.assignment-link{width:100%;box-sizing:border-box;margin:0 0 10px;padding:11px;border-radius:8px;border:1px solid #4a586b;background:#0b1018;color:#e8eef7;font-size:12px}
+</style>
+
+<style>
+.assignment-link-anchor{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin:0 0 10px;
+  padding:12px;
+  border-radius:8px;
+  background:#1d6ee8;
+  color:#fff!important;
+  text-align:center;
+  font-weight:800;
+  text-decoration:none!important;
+}
+</style>
+
+<style>
+.assignment-link{
+  width:100%;box-sizing:border-box;min-height:82px;margin:0 0 10px;padding:11px;
+  border-radius:8px;border:1px solid #4a586b;background:#0b1018;color:#e8eef7;
+  font-size:11px;line-height:1.35;word-break:break-all;
+}
+.assignment-link-anchor{display:block;width:100%;box-sizing:border-box;margin:0 0 10px;padding:12px;
+  border-radius:8px;background:#1d6ee8;color:#fff!important;text-align:center;font-weight:800;text-decoration:none!important}
+</style>
+
+<script>window.PICKLESCORE_UMPIRE_ONLY=true;</script>
+<style>
+body.umpire-only .setup-card,body.umpire-only .main-menu,body.umpire-only .setup-screen,
+body.umpire-only .desk-button,body.umpire-only .assignment-help{display:none!important}
+#umpireHome{max-width:620px;margin:24px auto;padding:18px}
+.umpire-home-card{padding:24px;border-radius:16px;text-align:center}
+.umpire-home-card h1{margin:0 0 8px}.umpire-home-card p{margin:0 0 20px;opacity:.8}
+.umpire-received{margin-top:16px;padding:14px;border-radius:12px;border:1px solid #394556;text-align:left}
+.umpire-received.hidden{display:none}.umpire-received h3{margin-top:0}
+.match-line{margin:7px 0}.umpire-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.umpire-actions button{flex:1;min-width:180px}
+</style>
+<style>
+.role-player-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.role-player-card{padding:12px;border:1px solid #394556;border-radius:12px;background:#111722}
+.role-player-card h4{margin:0 0 8px}
+.role-player-card label{display:block;font-size:12px;margin:7px 0 4px}
+.role-player-card select{width:100%}
+@media(max-width:620px){.role-player-grid{grid-template-columns:1fr}}
+</style><style>
+.match-timer-compact{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px auto;padding:9px 12px;max-width:520px;border:1px solid #394556;border-radius:12px;background:#111722}
+.match-timer-title{font-size:10px;font-weight:800;letter-spacing:.1em;opacity:.7}
+.match-timer-value{font-size:20px;font-weight:900;font-variant-numeric:tabular-nums;min-width:84px}
+.compact-action{font-size:11px!important;padding:7px 10px!important;min-height:32px!important}
+.match-timer-compact .compact-action.locked{opacity:.55;pointer-events:none}
+.role-player-card select{min-height:34px!important;padding:6px 9px!important;font-size:13px!important}
+.role-player-card{padding:9px!important}
+.role-player-card label{font-size:11px!important;margin:5px 0 3px!important}
+.role-player-card h4{font-size:13px!important;margin-bottom:5px!important}
+</style>
+<style id="maddy-paddles-color-theme-only">
+/* Maddy Paddles black / charcoal / neon-lime theme.
+   COLOR ONLY: original app sizing and layout are intentionally preserved. */
+:root{
+  --mp-black:#050706;
+  --mp-charcoal:#101513;
+  --mp-panel:#0C1712;
+  --mp-panel2:#122018;
+  --mp-lime:#A8F000;
+  --mp-lime2:#8DCC00;
+  --mp-border:#5E6B63;
+  --mp-border-lime:#84B900;
+  --mp-white:#F5F7F4;
+  --mp-muted:#B8C0BA;
+}
+
+html, body{
+  background:var(--mp-black)!important;
+  color:var(--mp-white)!important;
+}
+
+/* Existing surfaces: color changes only */
+.card,.panel,.section,.match-card,.score-card,
+header,.app-header,
+.match-timer-compact,.role-player-card,
+.history-card,.modal,.dialog{
+  background:var(--mp-charcoal)!important;
+  color:var(--mp-white)!important;
+  border-color:var(--mp-border)!important;
+}
+
+/* Deep areas */
+input,select,textarea{
+  background:var(--mp-panel)!important;
+  color:var(--mp-white)!important;
+  border-color:var(--mp-border)!important;
+}
+
+/* Text colors */
+h1,h2,h3,h4,h5,h6,label,.team,.team-name,.score,
+.match-timer-title,.match-timer-value{
+  color:var(--mp-white)!important;
+}
+.muted,.subtitle,.history-meta{
+  color:var(--mp-muted)!important;
+}
+
+/* Neon-lime accents */
+a,.accent,.live-status,.match-timer-value{
+  color:var(--mp-lime)!important;
+}
+.btn.primary,button.primary{
+  background:var(--mp-lime)!important;
+  border-color:var(--mp-lime)!important;
+  color:#071006!important;
+}
+
+/* Existing controls: retain their original size */
+.btn,.button,button{
+  border-color:var(--mp-border-lime)!important;
+}
+.btn:hover,button:hover,
+input:focus,select:focus,textarea:focus{
+  border-color:var(--mp-lime)!important;
+}
+
+/* Score controls: color only */
+.scorebtn,button.scorebtn{
+  border-color:var(--mp-lime)!important;
+}
+.scorebtn:hover,button.scorebtn:hover,
+.scorebtn:focus,button.scorebtn:focus{
+  border-color:var(--mp-lime)!important;
+  box-shadow:0 0 0 1px var(--mp-lime)!important;
+}
+
+/* Active/selected states */
+.active,.selected,.serving,.receiving,
+[aria-selected="true"]{
+  border-color:var(--mp-lime)!important;
+}
+.active,.selected,.serving,.receiving{
+  background:var(--mp-panel2)!important;
+}
+
+/* Disabled state remains subdued */
+button:disabled,.btn:disabled,
+input:disabled,select:disabled{
+  opacity:.55!important;
+}
+</style>
+
+
+<style id="maddy-paddles-score-animation">
+/* Score-number animation only. No scoring logic, sizing, or layout changes. */
+@keyframes maddyScorePulse{
+  0%   { transform:scale(1); filter:brightness(1); text-shadow:none; }
+  35%  { transform:scale(1.10); filter:brightness(1.35); text-shadow:0 0 10px rgba(168,240,0,.70); }
+  100% { transform:scale(1); filter:brightness(1); text-shadow:none; }
+}
+.maddy-score-animate{
+  animation:maddyScorePulse 260ms ease-out;
+  transform-origin:center;
+}
+</style>
+
+
+<!-- Restored approved Modern Sport visual/layout overrides -->
+<style id="maddy-paddles-modern-sport-theme">
+/* MADDY PADDLES — MODERN SPORT THEME
+   Visual-only override for the separate umpire test copy.
+   Existing markup, event handlers, scoring, QR and serving logic remain untouched. */
+:root{
+  --ms-bg:#07111f;
+  --ms-bg-deep:#050b14;
+  --ms-panel:#101d30;
+  --ms-panel-hi:#162740;
+  --ms-line:#2b405b;
+  --ms-lime:#b7f34a;
+  --ms-lime-deep:#8fc92d;
+  --ms-white:#f5f8fc;
+  --ms-muted:#a8b6c9;
+  --ms-blue:#193b63;
+}
+html,body{
+  min-height:100%;
+  background:radial-gradient(ellipse at 50% -12%,#183456 0%,var(--ms-bg) 48%,var(--ms-bg-deep) 100%)!important;
+  color:var(--ms-white)!important;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+}
+body.umpire-only{background:radial-gradient(ellipse at 50% -12%,#183456 0%,var(--ms-bg) 48%,var(--ms-bg-deep) 100%)!important}
+.app{background:transparent!important;max-width:600px!important;padding-bottom:18px}
+.top{
+  background:linear-gradient(135deg,#102541 0%,#091526 75%)!important;
+  border-bottom:1px solid #304967!important;
+  padding:22px 18px 17px!important;
+  box-shadow:0 12px 28px #0005!important;
+}
+.top h1{font-size:clamp(22px,5vw,28px)!important;font-weight:950!important;letter-spacing:.055em!important;color:var(--ms-white)!important}
+.top small{display:block;margin-top:5px;color:var(--ms-muted)!important;letter-spacing:.035em}
+.screen{padding:16px!important}
+.card,.serving-setup,.team,.match-timer-compact,.serving-status-card,.role-player-card{
+  background:linear-gradient(155deg,var(--ms-panel-hi),var(--ms-panel) 72%)!important;
+  color:var(--ms-white)!important;
+  border:1px solid var(--ms-line)!important;
+  border-radius:19px!important;
+  box-shadow:0 12px 30px #0004,inset 0 1px 0 #ffffff0b!important;
+}
+.card{padding:17px!important}
+h1,h2,h3,h4,h5,h6{color:var(--ms-white)!important}
+label,.meta,.card small,.assignment-help,.mp-warning{color:var(--ms-muted)!important}
+input,select,textarea,.assignment-link{
+  background:#091526!important;color:var(--ms-white)!important;
+  border:1px solid #38516f!important;border-radius:12px!important;
+  outline:none;box-shadow:inset 0 1px 3px #0005!important;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--ms-lime)!important;box-shadow:0 0 0 3px #b7f34a22!important}
+.btn,button{
+  border-radius:13px!important;font-weight:850!important;
+  transition:transform .12s ease,filter .12s ease,box-shadow .12s ease;
+}
+.btn:active,button:active{transform:translateY(1px) scale(.985)!important}
+.btn.primary,.btn.scorebtn,.scorebtn,button.primary{
+  background:linear-gradient(135deg,var(--ms-lime),var(--ms-lime-deep))!important;
+  border:1px solid #d0ff7b!important;color:#10200a!important;
+  box-shadow:0 5px 14px #9bdc3525!important;
+}
+.btn.light{
+  background:linear-gradient(135deg,#203a59,#172b44)!important;
+  border:1px solid #46617f!important;color:#edf4fc!important;
+}
+.btn.danger{background:linear-gradient(135deg,#652e3a,#47212d)!important;border:1px solid #985363!important;color:#ffe2e7!important}
+.scoreboard{gap:11px!important}
+.team{padding:16px 12px!important;position:relative!important;overflow:hidden!important}
+.team:before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--ms-lime),#4f8ed0);opacity:.9}
+.team h2{font-size:13px!important;letter-spacing:.09em!important;color:#dce8f7!important}
+.score{font-size:clamp(62px,16vw,86px)!important;line-height:1!important;color:var(--ms-lime)!important;font-weight:950!important;letter-spacing:-.065em!important;text-shadow:0 5px 20px #9bdc3520!important;font-variant-numeric:tabular-nums!important}
+.scorebtn{font-size:19px!important;padding:15px!important}
+.timeout{font-size:12px!important;padding:11px 8px!important}
+.timer,.match-timer-value{color:var(--ms-lime)!important;font-weight:900!important}
+.match-timer-compact{gap:10px!important;padding:11px 12px!important}
+.match-timer-title{color:var(--ms-muted)!important}
+.mp-serve-panel{
+  margin:13px 0 15px!important;padding:16px!important;
+  background:linear-gradient(145deg,#142b46,#0b192b)!important;
+  border:1px solid #3a5878!important;border-radius:20px!important;
+  box-shadow:0 13px 30px #0005!important;
+}
+.mp-serve-head strong{color:var(--ms-white)!important;letter-spacing:.1em!important}
+.mp-live-pill{background:var(--ms-lime)!important;color:#13200a!important}
+.mp-role{background:#09182a!important;border:1px solid #344e6d!important;border-radius:14px!important}
+.mp-role small,.mp-role .mp-sub{color:var(--ms-muted)!important}
+.mp-role b{color:var(--ms-white)!important}
+.mp-manual{border-top:1px solid #344e6d!important}
+.mp-manual summary{color:var(--ms-lime)!important}
+.mp-actions button{min-height:45px!important}
+#servingMeta{color:var(--ms-lime)!important}
+.nav{
+  background:#081526ed!important;border-top:1px solid #304967!important;
+  backdrop-filter:blur(14px)!important;padding:10px!important;
+  box-shadow:0 -10px 28px #0003!important;
+}
+.nav .btn{font-size:12px!important}
+.pill{background:#203a59!important;color:#eaf2fc!important;border:1px solid #3b5878!important}
+.history-item{border-bottom:1px solid #2b405b!important}
+.winner{color:var(--ms-lime)!important}
+.modal{background:#020813d9!important;backdrop-filter:blur(5px)!important}
+.modal-card{background:linear-gradient(155deg,#162740,#0d192a)!important;border:1px solid #3b5878!important;border-radius:20px!important}
+.assignment-link-anchor{background:linear-gradient(135deg,#244f7d,#17375b)!important;border:1px solid #527ba5!important;border-radius:12px!important;color:#fff!important}
+.qr-box{border:5px solid #fff!important;box-shadow:0 8px 24px #0005!important}
+#umpireHome{background:transparent!important}
+body.umpire-only #umpireHome .umpire-home-card{
+  background:linear-gradient(155deg,#162740 0%,#0d192a 78%)!important;
+  border:1px solid #3b5878!important;border-radius:24px!important;
+  box-shadow:0 18px 48px #0007,inset 0 1px 0 #ffffff10!important;
+}
+body.umpire-only #umpireHome .umpire-home-card h1{color:var(--ms-white)!important;text-shadow:0 3px 18px #0005!important}
+body.umpire-only #umpireHome .maddy-umpire-role{color:var(--ms-lime)!important}
+body.umpire-only #umpireHome .umpire-home-card>p{color:var(--ms-muted)!important}
+body.umpire-only #umpireHome #maddy-receive-options button,
+body.umpire-only #umpireHome>.umpire-home-card>.btn{
+  background:linear-gradient(135deg,var(--ms-lime),var(--ms-lime-deep))!important;
+  border:1px solid #d0ff7b!important;color:#10200a!important;
+  border-radius:15px!important;box-shadow:0 7px 18px #9bdc3525!important;
+}
+body.umpire-only #umpireHome .umpire-received{background:#0a192b!important;border:1px solid #3b5878!important;color:var(--ms-white)!important}
+@media(max-width:390px){
+  .screen{padding:12px!important}.team{padding:13px 9px!important}
+  .score{font-size:60px!important}.mp-role b{font-size:14px!important}
+  .nav{gap:6px!important;padding:8px!important}.nav .btn{padding:11px 4px!important;font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){.btn,button{transition:none!important}}
+</style>
+<style id="maddy-compact-server-receiver-layout">
+/* Compact Server / Receiver: layout-only; preserve original controls and handlers. */
+.serving-setup .role-player-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+.serving-setup .role-player-card{
+  display:grid!important;
+  grid-template-columns:54px minmax(0,1fr)!important;
+  align-items:center!important;
+  column-gap:8px!important;
+  row-gap:5px!important;
+  padding:8px!important;
+  min-width:0!important;
+}
+.serving-setup .role-player-card h4{
+  grid-column:1 / -1!important;
+  margin:0 0 1px!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+.serving-setup .role-player-card label{
+  display:block!important;
+  margin:0!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+}
+.serving-setup .role-player-card select{
+  width:100%!important;
+  min-width:0!important;
+  min-height:32px!important;
+  height:32px!important;
+  padding:5px 7px!important;
+  margin:0!important;
+  font-size:12px!important;
+  border-radius:9px!important;
+}
+.serving-setup > h3{
+  margin:0 0 7px!important;
+  font-size:15px!important;
+}
+/* Keep both teams side-by-side on phones to reduce vertical footprint. */
+@media(max-width:360px){
+  .serving-setup .role-player-card{grid-template-columns:46px minmax(0,1fr)!important;column-gap:6px!important}
+  .serving-setup .role-player-card select{font-size:11px!important}
+}
+/* Final compact polish: shorter cards, aligned headers, and clear live role state. */
+.serving-setup{padding:11px!important;margin-bottom:10px!important}
+.serving-setup .role-player-grid{gap:7px!important}
+.serving-setup .role-player-card{
+  padding:7px 8px!important;
+  row-gap:4px!important;
+  border-radius:12px!important;
+  transition:border-color .15s ease,box-shadow .15s ease,background .15s ease!important;
+}
+.serving-setup .role-player-card h4{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:5px!important;min-width:0!important;font-size:11px!important;letter-spacing:.06em!important;
+}
+.role-state-pill{
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;
+  padding:3px 6px;border-radius:999px;border:1px solid #49617b;
+  background:#172b43;color:#b9c9dc;font-size:8px;font-weight:900;letter-spacing:.045em;
+}
+.role-state-pill.is-serving{
+  color:#14200b;background:var(--ms-lime);border-color:#d0ff7b;
+  box-shadow:0 0 0 2px #b7f34a18;
+}
+.serving-setup .role-player-card.is-serving{
+  border-color:var(--ms-lime)!important;
+  box-shadow:0 0 0 1px #b7f34a30,inset 0 0 18px #b7f34a0b!important;
+}
+.serving-setup .role-player-card label{font-size:9px!important;letter-spacing:.02em!important}
+.serving-setup .role-player-card select{height:30px!important;min-height:30px!important;padding:4px 6px!important;font-size:11px!important}
+@media(max-width:360px){
+  .role-state-pill{font-size:7px;padding:3px 5px}
+}
+</style>
+<style id="timeout-layout-option-1">
+/* OPTION 1 — horizontal compact controls inside each team card */
+#teamCardA,#teamCardB{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"teamhead teamhead" "teamscore teamscore" "scoreaction scoreaction" "regular injury" "regtimer injtimer"!important;column-gap:8px!important;row-gap:6px!important;align-items:stretch!important}
+#teamCardA h2,#teamCardB h2{grid-area:teamhead!important;margin-bottom:2px!important}
+#teamCardA .score,#teamCardB .score{grid-area:teamscore!important;margin:8px 0!important}
+#teamCardA .scorebtn,#teamCardB .scorebtn{grid-area:scoreaction!important}
+#teamCardA #timeoutA,#teamCardB #timeoutB{grid-area:regular!important;margin:0!important;width:100%!important;min-width:0!important;min-height:48px!important;padding:9px 5px!important;font-size:clamp(9px,2.6vw,12px)!important;line-height:1.25!important}
+#teamCardA #timerA,#teamCardB #timerB{grid-area:regtimer!important;margin:0!important;min-height:15px!important;font-size:12px!important}
+#teamCardA #injuryA,#teamCardB #injuryB{grid-area:injury!important;margin:0!important;width:100%!important;min-width:0!important;min-height:48px!important;padding:9px 5px!important;font-size:clamp(9px,2.6vw,12px)!important;line-height:1.25!important}
+#teamCardA #injuryTimerA,#teamCardB #injuryTimerB{grid-area:injtimer!important;margin:0!important;min-height:15px!important;font-size:12px!important}
+</style>
+</head>
+<body class="umpire-only">
+<div id="umpireHome">
+  <div class="card umpire-home-card">
+    <h1>🏓 PICKLESCORE UMPIRE</h1>
+    <p>Receive an assigned match, review it, then start scoring.</p>
+    <button type="button" class="btn primary" onclick="receiveMatchPackage()">📥 RECEIVE MATCH</button>
+    <div id="umpireReceived" class="umpire-received hidden">
+      <h3>📋 MATCH RECEIVED</h3>
+      <div id="umpireMatchDetails"></div>
+      <div class="umpire-actions">
+        <button type="button" class="btn light" onclick="clearReceivedMatch()">✖ REJECT</button>
+        <button type="button" class="btn primary" onclick="acceptReceivedMatch()">✅ ACCEPT & START MATCH</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app" style="display:none">
+  <div class="top"><h1>🏓 MADDY PADDLES</h1><small>Offline match scoring & history</small></div>
+
+  <section id="setup" class="screen">
+    <div class="card">
+      <h2>New Match</h2>
+      <label>Match Number</label><input id="matchNo" placeholder="001">
+      <label>Event / Tournament</label><input id="event" placeholder="Weekend Pickleball">
+      <div class="row">
+        <div><label>Division</label><select id="division"><option>Men's Doubles</option><option>Women's Doubles</option><option>Mixed Category</option><option>Men's Singles</option><option>Women's Singles</option></select></div>
+        <div><label>Court</label><input id="court" placeholder="Court 1"></div>
+      </div>
+      <label>Team A — Players</label><input id="teamA" placeholder="Player 1 / Player 2">
+      <label>Team B — Players</label><input id="teamB" placeholder="Player 3 / Player 4">
+      <div class="row">
+        <div><label>Game To</label><select id="target"><option>11</option><option>15</option><option>21</option></select></div>
+        <div><label>Win By</label><select id="winby"><option value="slide1">Slide 1</option><option value="slide2">Slide 2</option><option value="sudden">Sudden Death</option></select></div>
+      </div>
+      <br><button type="button" class="btn primary desk-button" onclick="generateMatchAssignment()">📤 CREATE MATCH PACKAGE</button>
+      <button type="button" class="btn light desk-button" onclick="receiveMatchPackage()">📥 RECEIVE MATCH</button>
+      
+      
+      
+<p class="assignment-help">Prepare the match first, then show the generated QR code to the umpire.</p>
+      <button class="btn primary" style="width:100%" onclick="startMatch()">START MATCH</button>
+    </div>
+  </section>
+
+  <section id="score" class="screen hidden">
+    <div class="meta" id="matchMeta"></div>
+    <div id="pauseBanner" class="card hidden" style="text-align:center;border:2px solid #7f1d1d;background:#2a1518">
+      <div style="font-size:20px;font-weight:900">⏸️ PLAY PAUSED</div>
+      <div id="pauseReason" style="margin:5px 0;color:#ffb4b4;font-weight:800">TIMEOUT</div>
+      <div id="pauseCountdown" style="font-size:42px;font-weight:900;font-variant-numeric:tabular-nums">1:00</div>
+      <button class="btn primary" style="width:100%;margin-top:8px" onclick="resumePlay()">▶️ RESUME PLAY</button>
+    </div>
+    <div class="serving-setup" style="margin-bottom:14px">
+      <h3 style="margin:0 0 8px">🏓 Server / Receiver</h3>
+      <div class="role-player-grid">
+        <div class="role-player-card" id="rolePlayerCardA">
+          <h4><span>TEAM A</span><span class="role-state-pill" id="roleStateA">—</span></h4>
+          <label>Role</label>
+          <select id="roleA">
+            <option value="Server">Server</option>
+            <option value="Receiver">Receiver</option>
+          </select>
+          <label>Player</label>
+          <select id="playerA"></select>
+        </div>
+        <div class="role-player-card" id="rolePlayerCardB">
+          <h4><span>TEAM B</span><span class="role-state-pill" id="roleStateB">—</span></h4>
+          <label>Role</label>
+          <select id="roleB">
+            <option value="Server">Server</option>
+            <option value="Receiver">Receiver</option>
+          </select>
+          <label>Player</label>
+          <select id="playerB"></select>
+        </div>
+      </div>
+    </div>
+    <div class="match-timer-compact" id="matchTimerCard">
+  <span class="match-timer-title">MATCH TIME</span>
+  <span class="match-timer-value" id="matchTimer">00:00:00</span>
+  <button type="button" class="btn primary compact-action" id="startMatchTimerBtn" onclick="startOfficialMatchTimer()">▶ START</button>
+</div>
+<div class="scoreboard">
+      <div class="team" id="teamCardA"><h2 id="teamAName">TEAM A</h2><div class="score" id="scoreA">0</div><button class="btn primary scorebtn" onclick="addPoint('A')">+1</button><button id="timeoutA" class="btn light timeout" onclick="startTimeout('A')">TIME OUT — 1:00</button>
+        <div id="timerA" class="timer"></div>
+        <button id="injuryA" class="btn danger timeout" onclick="startInjuryTimeout('A')">🩹 INJURY TIMEOUT — 5:00</button>
+        <div id="injuryTimerA" class="timer"></div></div>
+      <div class="team" id="teamCardB"><h2 id="teamBName">TEAM B</h2><div class="score" id="scoreB">0</div><button class="btn primary scorebtn" onclick="addPoint('B')">+1</button><button id="timeoutB" class="btn light timeout" onclick="startTimeout('B')">TIME OUT — 1:00</button>
+        <div id="timerB" class="timer"></div>
+        <button id="injuryB" class="btn danger timeout" onclick="startInjuryTimeout('B')">🩹 INJURY TIMEOUT — 5:00</button>
+        <div id="injuryTimerB" class="timer"></div></div>
+    </div>
+    <button type="button" class="btn light switch-side-btn" id="switchSideBtn" onclick="switchScoreboardSides()" aria-pressed="false" style="width:100%;margin-top:10px">⇄ SWITCH SIDE</button>
+    <div id="finishBanner" class="card hidden" style="text-align:center;margin-top:14px">
+      <h2 id="finishWinner" style="margin:0 0 4px">TEAM WINS</h2>
+      <div id="finishScore" style="font-size:34px;font-weight:900;margin:8px 0">0–0</div>
+      <p style="margin:4px 0 12px;color:#aab4c3">Confirm the final score to save this match.</p>
+      <button id="maddy-save-finish-btn" class="btn primary" style="width:100%" onclick="finishMatch()">SAVE & FINISH MATCH</button>
+      <div id="maddy-send-result-prompt" class="hidden" style="margin-top:12px;padding:14px;border:1px solid #405649;border-radius:14px;background:#0b1410;text-align:left">
+        <div style="font-weight:900;letter-spacing:.05em;color:#c7f36b;margin-bottom:5px">📤 SEND RESULT TO TOURNAMENT DESK</div>
+        <div style="font-size:12px;line-height:1.5;color:#a3b2a8;margin-bottom:10px">Match saved to umpire history. Send the final result to the linked online match.</div>
+        <button type="button" id="maddy-send-result-btn" class="btn primary" style="width:100%" onclick="sendMaddyMatchResult()">SEND RESULT</button>
+        <div id="maddy-send-result-status" role="status" aria-live="polite" style="font-size:12px;line-height:1.45;margin-top:9px;color:#a3b2a8"></div>
+      </div>
+    </div>
+    <section class="mp-serve-panel" aria-label="Live serving controls">
+      <div class="mp-serve-head"><strong>LIVE SERVING STATUS</strong><span class="mp-live-pill" id="mpServingTeam">SERVING · —</span></div>
+      <div class="mp-role-grid">
+        <div class="mp-role"><small>CURRENT SERVER · <span id="mpServerNumber">SERVER 1</span></small><b id="mpCurrentServer">—</b><div class="mp-sub" id="mpServerTeamLabel">Team —</div></div>
+        <div class="mp-role"><small>RECEIVER</small><b id="mpCurrentReceiver">—</b><div class="mp-sub" id="mpReceiverTeamLabel">Team —</div></div>
+      </div>
+      <div class="mp-actions">
+        <button type="button" class="btn primary" id="mpNextServerBtn" onclick="umpireNextServer()">NEXT SERVER 2</button>
+        <button type="button" class="btn light" id="mpSideOutBtn" onclick="umpireSideOut()">SIDE OUT</button>
+      </div>
+      <details class="mp-manual">
+        <summary>MANUAL SERVER / RECEIVER CORRECTION</summary>
+        <div class="mp-manual-grid">
+          <div><label for="mpManualServer">Serving player</label><select id="mpManualServer"></select></div>
+          <div><label for="mpManualReceiver">Receiving player</label><select id="mpManualReceiver"></select></div>
+        </div>
+        <button type="button" class="btn light mp-apply" onclick="applyManualServeCorrection()">APPLY CORRECTION</button>
+      </details>
+      <div class="mp-warning">Use NEXT SERVER when Server 1 loses the serving turn. Use SIDE OUT when Server 2 loses the serving turn. Manual correction is available for umpire adjustments.</div>
+      <div id="servingMeta" style="display:none">SERVER • — • RECEIVER • —</div>
+      <div id="serveNote" style="display:none">Starting setup</div>
+    </section>
+    <p class="meta" id="gameMeta">GAME 1 • IN PROGRESS</p>
+    <div class="row">
+      <button class="btn light" onclick="undo()">↩ UNDO</button>
+      <button id="finishButton" class="btn danger" onclick="finishMatch()">MATCH FINISH</button>
+    </div>
+  </section>
+
+  <section id="history" class="screen hidden">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <h2 style="margin:0">Match History</h2>
+        <button class="btn danger" onclick="deleteHistory()" title="Delete all match history" aria-label="Delete all match history">🗑️</button>
+      </div>
+      <div id="historyList" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <div class="nav">
+    <button class="btn light" onclick="resetForNewMatch(); resetOfficialMatchTimer();show('setup')">➕ New</button>
+    <button class="btn light" onclick="show('score')">🏓 Score</button>
+    <button class="btn light" onclick="show('history');renderHistory()">📋 History</button>
+    <button class="btn light" onclick="resetOfficialMatchTimer();show('setup')">🏠 Main Menu</button>
+  </div>
+</div>
+
+<script>
+const DB_KEY='picklescore_matches_v3';
+let state={}, scoreboardSidesSwitched=false, timeoutState={A:{used:false,running:false,end:0},B:{used:false,running:false,end:0}},
+    injuryState={A:{used:false,running:false,end:0},B:{used:false,running:false,end:0}},
+    timerIntervals={}, injuryIntervals={};
+
+function matches(){return JSON.parse(localStorage.getItem(DB_KEY)||'[]')}
+function saveMatches(x){localStorage.setItem(DB_KEY,JSON.stringify(x))}
+function show(id){['setup','score','history'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id))}
+function setScoreboardSides(switched){
+  scoreboardSidesSwitched=!!switched;
+  const cardA=document.getElementById('teamCardA');
+  const cardB=document.getElementById('teamCardB');
+  const button=document.getElementById('switchSideBtn');
+  // Reorder only the two visual scoreboard cards. Match/team data stays A/B.
+  if(cardA)cardA.style.order=scoreboardSidesSwitched?'2':'1';
+  if(cardB)cardB.style.order=scoreboardSidesSwitched?'1':'2';
+  if(button)button.setAttribute('aria-pressed',String(scoreboardSidesSwitched));
+}
+function switchScoreboardSides(){
+  setScoreboardSides(!scoreboardSidesSwitched);
+}
+function updateServingChoices(){
+  const aEl=document.getElementById('playerA');
+  const bEl=document.getElementById('playerB');
+  const roleA=document.getElementById('roleA');
+  const roleB=document.getElementById('roleB');
+  if(!aEl||!bEl||!roleA||!roleB)return;
+
+  const playersA=(state.aPlayers&&state.aPlayers.length)
+    ? state.aPlayers
+    : ((document.getElementById('teamA')?.value||'').split('/').map(x=>x.trim()).filter(Boolean).slice(0,2));
+  const playersB=(state.bPlayers&&state.bPlayers.length)
+    ? state.bPlayers
+    : ((document.getElementById('teamB')?.value||'').split('/').map(x=>x.trim()).filter(Boolean).slice(0,2));
+
+  const fill=(el,players,current)=>{
+    el.innerHTML='';
+    players.forEach(player=>{
+      const opt=document.createElement('option');
+      opt.value=player;
+      opt.textContent=player;
+      el.appendChild(opt);
+    });
+    if(players.includes(current)) el.value=current;
+  };
+
+  fill(aEl,playersA,state.playerA||'');
+  fill(bEl,playersB,state.playerB||'');
+
+  state.playerA=aEl.value||'';
+  state.playerB=bEl.value||'';
+  state.roleA=roleA.value;
+  state.roleB=roleB.value;
+
+  // Keep the existing scoring engine's active server/receiver values in sync.
+  if(state.roleA==='Server'){
+    state.serverTeam='A'; state.serverPlayer=state.playerA;
+    state.receiverTeam='B'; state.receiverPlayer=state.playerB;
+  }else{
+    state.receiverTeam='A'; state.receiverPlayer=state.playerA;
+    state.serverTeam='B'; state.serverPlayer=state.playerB;
+  }
+  state.firstServer=state.serverPlayer;
+  state.firstReceiver=state.receiverPlayer;
+  state.serverNumber=1;
+  updateServingDisplay();
+  updatePremiumServePanel();
+}
+
+function updateServingDisplay(){
+  const sm=document.getElementById('servingMeta');
+  const note=document.getElementById('serveNote');
+  const server=state.serverPlayer||'';
+  const receiver=state.receiverPlayer||'';
+  if(sm) sm.textContent='SERVER • '+(server||'—')+'  •  RECEIVER • '+(receiver||'—');
+  if(note) note.textContent=(server&&receiver)
+    ? ('Serving Team • '+(state.serverTeam||'—'))
+    : 'Select a role and one player for each team';
+  updateCompactRoleIndicators();
+  updatePremiumServePanel();
+}
+
+// Visual-only status badges reflect the existing serving state; no scoring logic changes.
+function updateCompactRoleIndicators(){
+  const servingTeam=state.serverTeam||'';
+  ['A','B'].forEach(team=>{
+    const card=document.getElementById('rolePlayerCard'+team);
+    const pill=document.getElementById('roleState'+team);
+    const active=servingTeam===team;
+    if(card)card.classList.toggle('is-serving',active);
+    if(pill){
+      pill.textContent=active?'SERVING':'RECEIVING';
+      pill.classList.toggle('is-serving',active);
+    }
+  });
+}
+
+function updateServingAfterPoint(scoringTeam){
+  // Server and receiver are manually controlled. Scoring never changes them.
+  updateServingDisplay();
+}
+
+function updatePremiumServePanel(){
+  const team=state.serverTeam||'—';
+  const server=state.serverPlayer||'—';
+  const receiver=state.receiverPlayer||'—';
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+  set('mpServingTeam','SERVING · '+(team==='—'?'—':'TEAM '+team));
+  set('mpCurrentServer',server); set('mpCurrentReceiver',receiver);
+  set('mpServerNumber','SERVER '+(state.serverNumber||1));
+  set('mpServerTeamLabel','Team '+team);
+  set('mpReceiverTeamLabel','Team '+(state.receiverTeam||'—'));
+  const next=document.getElementById('mpNextServerBtn');
+  if(next){next.disabled=(state.serverNumber||1)>=2;next.textContent=(state.serverNumber||1)>=2?'SERVER 2 ACTIVE':'NEXT SERVER 2';next.style.opacity=next.disabled?'.48':'1';}
+  const fill=(id,players,current)=>{
+    const el=document.getElementById(id);if(!el)return;
+    const old=el.value;el.innerHTML='';
+    (players||[]).forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;el.appendChild(o);});
+    if((players||[]).includes(current))el.value=current;else if((players||[]).includes(old))el.value=old;
+  };
+  const servingPlayers=team==='A'?(state.aPlayers||[]):(team==='B'?(state.bPlayers||[]):[]);
+  const receivingPlayers=(state.receiverTeam==='A'?(state.aPlayers||[]):(state.receiverTeam==='B'?(state.bPlayers||[]):[]));
+  fill('mpManualServer',servingPlayers,server);fill('mpManualReceiver',receivingPlayers,receiver);
+}
+function umpireNextServer(){
+  if(!state||!state.serverTeam)return;
+  if((state.serverNumber||1)>=2){alert('Server 2 is already active. Use SIDE OUT when this serving turn is lost.');return;}
+  const players=state.serverTeam==='A'?(state.aPlayers||[]):(state.bPlayers||[]);
+  if(players.length<2){alert('Two players are required on the serving team to select Server 2.');return;}
+  const other=players.find(p=>p!==state.serverPlayer)||players[1];
+  state.serverPlayer=other;state.serverNumber=2;state.serveStage='second-server';
+  state.firstServer=state.firstServer||state.serverPlayer;
+  updateServingDisplay();
+}
+function umpireSideOut(){
+  if(!state||!state.serverTeam)return;
+  const oldTeam=state.serverTeam;
+  const newTeam=oldTeam==='A'?'B':'A';
+  const newPlayers=newTeam==='A'?(state.aPlayers||[]):(state.bPlayers||[]);
+  const oldPlayers=oldTeam==='A'?(state.aPlayers||[]):(state.bPlayers||[]);
+  if(!newPlayers.length||!oldPlayers.length){alert('Player information is incomplete.');return;}
+  state.serverTeam=newTeam;state.receiverTeam=oldTeam;
+  state.serverPlayer=newPlayers[0];state.receiverPlayer=oldPlayers[0];
+  state.serverNumber=1;state.serveStage='first-server';
+  state.roleA=newTeam==='A'?'Server':'Receiver';
+  state.roleB=newTeam==='B'?'Server':'Receiver';
+  const ra=document.getElementById('roleA'),rb=document.getElementById('roleB');
+  if(ra)ra.value=state.roleA;if(rb)rb.value=state.roleB;
+  updateServingDisplay();
+}
+function applyManualServeCorrection(){
+  const server=document.getElementById('mpManualServer')?.value||'';
+  const receiver=document.getElementById('mpManualReceiver')?.value||'';
+  if(!server||!receiver){alert('Select both a server and a receiver.');return;}
+  const serverTeam=(state.aPlayers||[]).includes(server)?'A':((state.bPlayers||[]).includes(server)?'B':null);
+  const receiverTeam=(state.aPlayers||[]).includes(receiver)?'A':((state.bPlayers||[]).includes(receiver)?'B':null);
+  if(!serverTeam||!receiverTeam||serverTeam===receiverTeam){alert('Server and receiver must belong to opposing teams.');return;}
+  state.serverTeam=serverTeam;state.serverPlayer=server;
+  state.receiverTeam=receiverTeam;state.receiverPlayer=receiver;
+  state.roleA=serverTeam==='A'?'Server':'Receiver';state.roleB=serverTeam==='B'?'Server':'Receiver';
+  const ra=document.getElementById('roleA'),rb=document.getElementById('roleB');
+  if(ra)ra.value=state.roleA;if(rb)rb.value=state.roleB;
+  state.serverNumber=1;state.serveStage='manual-correction';
+  updateServingDisplay();
+  document.querySelector('.mp-manual')?.removeAttribute('open');
+}
+
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function resetForNewMatch(){
+  // A newly started match must not inherit the previous online assignment.
+  window.__MADDY_ONLINE_MATCH_ID='';
+  localStorage.removeItem('maddy_online_match_id');
+  localStorage.removeItem('maddy_last_finished_match');
+  const sendPromptReset=document.getElementById('maddy-send-result-prompt');
+  if(sendPromptReset)sendPromptReset.classList.add('hidden');
+  const saveBtnReset=document.getElementById('maddy-save-finish-btn');
+  if(saveBtnReset){saveBtnReset.disabled=false;saveBtnReset.textContent='SAVE & FINISH MATCH';}
+  const sendBtnReset=document.getElementById('maddy-send-result-btn');
+  if(sendBtnReset){sendBtnReset.disabled=false;sendBtnReset.textContent='SEND RESULT';}
+  const sendStatusReset=document.getElementById('maddy-send-result-status');
+  if(sendStatusReset)sendStatusReset.textContent='';
+  const finishButtonReset=document.getElementById('finishButton');
+  if(finishButtonReset){finishButtonReset.disabled=false;finishButtonReset.textContent='MATCH FINISH';}
+  // Stop all timeout/injury timers and clear their intervals.
+  Object.keys(timerIntervals||{}).forEach(k=>clearInterval(timerIntervals[k]));
+  Object.keys(injuryIntervals||{}).forEach(k=>clearInterval(injuryIntervals[k]));
+  timerIntervals={}; injuryIntervals={};
+  timeoutState={A:{used:false,running:false,end:0},B:{used:false,running:false,end:0}};
+  injuryState={A:{used:false,running:false,end:0},B:{used:false,running:false,end:0}};
+
+  // Reset match runtime state without touching persisted history.
+  state={};
+  setScoreboardSides(false);
+  const ids=['matchNo','event','court','teamA','teamB'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const division=document.getElementById('division');
+  if(division)division.value="Men's Doubles";
+  const target=document.getElementById('target');
+  if(target)target.value=11;
+  const winby=document.getElementById('winby');
+  if(winby)winby.value='slide1';
+
+  // Clear any serving selections and pause UI.
+  ['roleA','playerA','roleB','playerB'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',()=>{
+    const roleA=document.getElementById('roleA'), roleB=document.getElementById('roleB');
+    const playerA=document.getElementById('playerA'), playerB=document.getElementById('playerB');
+    state.roleA=roleA?.value||'Server';
+    state.roleB=roleB?.value||'Receiver';
+    state.playerA=playerA?.value||'';
+    state.playerB=playerB?.value||'';
+    if(state.roleA==='Server'){
+      state.serverTeam='A'; state.serverPlayer=state.playerA;
+      state.receiverTeam='B'; state.receiverPlayer=state.playerB;
+    }else{
+      state.receiverTeam='A'; state.receiverPlayer=state.playerA;
+      state.serverTeam='B'; state.serverPlayer=state.playerB;
+    }
+    state.firstServer=state.serverPlayer;
+    state.firstReceiver=state.receiverPlayer;
+    updateServingDisplay();
+  });
+});
+  const banner=document.getElementById('pauseBanner');
+  if(banner)banner.classList.add('hidden');
+  const timerEls=['timerA','timerB','injuryTimerA','injuryTimerB'];
+  timerEls.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='';});
+
+  // Restore all setup controls to an editable state.
+  const setup=document.getElementById('setup');
+  if(setup){
+    setup.querySelectorAll('input,select,textarea,button').forEach(el=>{
+      el.disabled=false;
+      el.classList.remove('disabled');
+    });
+  }
+  updateTimeoutUI();
+  updateInjuryUI();
+}
+
+function makeMatchId(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s='';for(let i=0;i<4;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return 'PS-'+new Date().getFullYear()+'-'+(document.getElementById('matchNo')?.value.trim()||'NA')+'-'+s;
+}
+function getSetupForm(){
+  const v=id=>document.getElementById(id)?.value?.trim()||'';
+  return {
+    matchNumber:v('matchNo'),event:v('event'),division:v('division'),court:v('court'),
+    teamA:v('teamA'),teamB:v('teamB'),
+    target:document.getElementById('target')?.value||'11',
+    winBy:document.getElementById('winby')?.value||'2'
+  };
+}
+
+
+function encodeMatchPackage(payload){
+  const json=JSON.stringify(payload);
+  const bytes=new TextEncoder().encode(json);
+  let bin='';
+  for(const b of bytes)bin+=String.fromCharCode(b);
+  return 'PSMATCH1.'+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decodeMatchPackage(pkg){
+  try{
+    const raw=pkg.trim().replace(/^PSMATCH1\./,'');
+    const padded=raw.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-raw.length%4)%4);
+    const bin=atob(padded);
+    const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+    const obj=JSON.parse(new TextDecoder().decode(bytes));
+    return obj;
+  }catch(e){return null;}
+}
+function getPickleScoreLaunchURL(payload){
+  // Kept as a local preview URL only. Formal hosted links can be added later.
+  return 'index.html?match='+encodeMatchPackage(payload);
+}
+function generateMatchAssignment(){
+  const d=getSetupForm();
+  if(!d.matchNumber||!d.teamA||!d.teamB){
+    alert('Please enter the Match Number, Player/Team A, and Player/Team B before creating the match package.');
+    return;
+  }
+  const payload={
+    type:'PickleScoreMatch',
+    version:4,
+    matchId:makeMatchId(),
+    status:'WAITING',
+    createdAt:Date.now(),
+    ...d
+  };
+  const pkg=encodeMatchPackage(payload);
+  localStorage.setItem('picklescore_pending_assignment',JSON.stringify(payload));
+  localStorage.setItem('picklescore_last_match_package',pkg);
+
+  document.getElementById('assignmentSummary').innerHTML=
+    '<div>MATCH #'+escapeHtml(d.matchNumber)+'</div><div>'+escapeHtml(d.division||'—')+' • '+escapeHtml(d.court||'—')+'</div><div>'+escapeHtml(d.teamA)+'<br>VS<br>'+escapeHtml(d.teamB)+'</div>';
+  document.getElementById('assignmentId').textContent=payload.matchId;
+  const link=document.getElementById('assignmentLink');
+  if(link){
+    link.value=pkg;
+    link.removeAttribute('href');
+  }
+  const anchor=document.getElementById('assignmentLinkAnchor');
+  if(anchor){
+    anchor.textContent='📋 COPY / SHARE MATCH PACKAGE';
+    anchor.href='#';
+    anchor.onclick=(e)=>{e.preventDefault();copyMatchLink();};
+  }
+  document.getElementById('assignmentModal').classList.remove('hidden');
+}
+function copyMatchLink(){
+  const link=document.getElementById('assignmentLink');
+  if(!link || !link.value)return;
+  const done=()=>alert('Match Package copied. Send it to the umpire.');
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(link.value).then(done).catch(()=>fallbackCopy(link,done));
+  }else fallbackCopy(link,done);
+}
+function fallbackCopy(el,done){
+  el.focus();el.select();
+  try{document.execCommand('copy');done();}
+  catch(e){alert('Please select and copy the Match Package manually.');}
+}
+function receiveMatchPackage(){
+  const pkg=prompt('Paste the Match Package received from the Tournament Desk:');
+  if(!pkg)return;
+  const payload=decodeMatchPackage(pkg);
+  if(!payload || payload.type!=='PickleScoreMatch'){alert('Invalid PickleScore Match Package.');return;}
+  window.pendingUmpireMatch=payload;
+  localStorage.setItem('picklescore_received_match',JSON.stringify(payload));
+  const d=document.getElementById('umpireMatchDetails');
+  d.innerHTML='<div class="match-line"><b>Match #:</b> '+escapeHtml(payload.matchNumber||'—')+'</div>'+
+    '<div class="match-line"><b>Division:</b> '+escapeHtml(payload.division||'—')+'</div>'+
+    '<div class="match-line"><b>Court:</b> '+escapeHtml(payload.court||'—')+'</div>'+
+    '<div class="match-line"><b>Side A:</b> '+escapeHtml(payload.teamA||'—')+'</div>'+
+    '<div class="match-line"><b>Side B:</b> '+escapeHtml(payload.teamB||'—')+'</div>'+
+    '<div class="match-line"><b>Game To:</b> '+escapeHtml(String(payload.target||'—'))+'</div>'+
+    '<div class="match-line"><b>Win By:</b> '+escapeHtml(String(payload.winBy||'—'))+'</div>';
+  document.getElementById('umpireReceived').classList.remove('hidden');
+}
+function clearReceivedMatch(){
+  window.pendingUmpireMatch=null;
+  localStorage.removeItem('picklescore_received_match');
+  document.getElementById('umpireReceived').classList.add('hidden');
+}
+function acceptReceivedMatch(){
+  const payload=window.pendingUmpireMatch;
+  if(!payload){alert('Please receive a match first.');return;}
+  fillSetupFromAssignment(payload);
+  document.getElementById('umpireHome').style.display='none';
+  const setup=document.getElementById('setupScreen');if(setup)setup.style.display='none';
+  startMatch();
+}
+function closeAssignment(){document.getElementById('assignmentModal').classList.add('hidden');}
+
+function decodeMatchFromLink(encoded){
+  try{
+    const normalized=encoded.replace(/-/g,'+').replace(/_/g,'/');
+    const padded=normalized+'='.repeat((4-normalized.length%4)%4);
+    const bin=atob(padded);
+    const bytes=Uint8Array.from(bin,c=>c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }catch(e){return null;}
+}
+function fillSetupFromAssignment(payload){
+  const set=(id,val)=>{
+    const el=document.getElementById(id);
+    if(el && val!==undefined && val!==null){el.value=val;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));}
+  };
+  set('matchNo',payload.matchNumber);
+  set('event',payload.event);
+  set('division',payload.division);
+  set('court',payload.court);
+  set('teamA',payload.teamA);
+  set('teamB',payload.teamB);
+  set('target',payload.target);
+  set('winby',payload.winBy);
+  localStorage.setItem('picklescore_received_match',JSON.stringify(payload));
+  state.receivedAssignment=payload;
+}
+function importMatchFromLaunchLink(){
+  const params=new URLSearchParams(window.location.search);
+  const encoded=params.get('match');
+  if(!encoded)return false;
+  const payload=decodeMatchFromLink(encoded);
+  if(!payload || payload.type!=='PickleScoreMatch')return false;
+  fillSetupFromAssignment(payload);
+  setTimeout(()=>{
+    const ok=confirm(
+      'MATCH RECEIVED\\n\\n'+
+      'Match #'+(payload.matchNumber||'—')+'\\n'+
+      (payload.division||'—')+' • '+(payload.court||'—')+'\\n\\n'+
+      (payload.teamA||'—')+'\\nVS\\n'+(payload.teamB||'—')+
+      '\\n\\nAccept and start this match?'
+    );
+    if(ok){
+      startMatch();
+      // Clean the URL after import so refresh does not repeatedly prompt.
+      history.replaceState({},document.title,window.location.pathname);
+    }else{
+      history.replaceState({},document.title,window.location.pathname);
+    }
+  },100);
+  return true;
+}
+function startMatch(){
+  const incomingOnlineMatchId=window.__MADDY_ONLINE_MATCH_ID||localStorage.getItem('maddy_online_match_id')||'';
+  const get=id=>document.getElementById(id).value.trim();
+  const form={matchNo:get('matchNo'),event:get('event'),division:get('division'),court:get('court'),teamA:get('teamA'),teamB:get('teamB'),
+    target:document.getElementById('target').value,winby:document.getElementById('winby').value};
+  resetForNewMatch();
+  document.getElementById('matchNo').value=form.matchNo;
+  document.getElementById('event').value=form.event;
+  document.getElementById('division').value=form.division;
+  document.getElementById('court').value=form.court;
+  document.getElementById('teamA').value=form.teamA;
+  document.getElementById('teamB').value=form.teamB;
+  document.getElementById('target').value=form.target;
+  document.getElementById('winby').value=form.winby;
+  const ap=form.teamA.split('/').map(x=>x.trim()).filter(Boolean).slice(0,2);
+  const bp=get('teamB').split('/').map(x=>x.trim()).filter(Boolean).slice(0,2);
+  state={id:'M-'+Date.now().toString().slice(-8),matchNo:get('matchNo')||'001',date:new Date().toISOString(),
+    event:get('event')||'Untitled Event',division:get('division')||"Men's Doubles",court:get('court')||'Unassigned',
+    a:ap.join(' / ')||'Player 1 / Player 2',b:bp.join(' / ')||'Player 3 / Player 4',
+    aPlayers:ap.length?ap:['Player 1','Player 2'],bPlayers:bp.length?bp:['Player 3','Player 4'],
+    firstServer:'',firstReceiver:'',
+    serverTeam:null,serverPlayer:'',receiverTeam:null,receiverPlayer:'',
+    serveStage:'first-server',serverNumber:1,
+    target:+document.getElementById('target').value,winby:document.getElementById('winby').value,
+    onlineMatchId:incomingOnlineMatchId,matchSaved:false,
+    game:1,scoreA:0,scoreB:0,games:[],history:[]};
+  timeoutState={A:{used:false,running:false,end:0},B:{used:false,running:false,end:0}};
+  injuryState={A:{used:false,running:false,end:0},B:{used:false,running:false,end:0}};
+  state.pendingWinner=null;state.pendingFinalScore=null;state.paused=false;state.pauseType=null;state.pauseTeam=null;state.pauseEnd=0;
+  document.getElementById('finishBanner').classList.add('hidden');
+  updateScore();updateTimeoutUI();updateInjuryUI();show('score');updateServingChoices();
+  state.serverTeam=playerTeam(state.serverPlayer);state.receiverTeam=playerTeam(state.receiverPlayer);
+  state.firstServer=state.serverPlayer;state.firstReceiver=state.receiverPlayer;
+  updateServingDisplay();updateControlFreeze();show('score');
+}
+
+function announceMatchPointOnce(){
+  if(!state || state.matchPointAnnounced) return;
+  const target=Number(state.target);
+  if(!Number.isFinite(target) || target<2) return;
+  const matchPoint=target-1;
+  if(state.scoreA!==matchPoint && state.scoreB!==matchPoint) return;
+  state.matchPointAnnounced=true;
+  try{
+    window.parent.postMessage({type:'MADDY_TTS_REQUEST',text:'MATCH POINT!'},'*');
+  }catch(e){}
+  if('speechSynthesis' in window){
+    try{
+      window.speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance('MATCH POINT!');
+      u.rate=1.05; u.pitch=1.12; u.volume=1;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+}
+
+function addPoint(t){
+  if(state.pendingWinner||state.paused)return;
+  state.history.push({a:state.scoreA,b:state.scoreB,serverTeam:state.serverTeam,serverPlayer:state.serverPlayer,receiverTeam:state.receiverTeam,receiverPlayer:state.receiverPlayer,serverNumber:state.serverNumber});
+  if(t==='A')state.scoreA++;else state.scoreB++;
+  announceMatchPointOnce();
+  updateServingAfterPoint(t);
+  updateScore();
+  const hi=Math.max(state.scoreA,state.scoreB),lo=Math.min(state.scoreA,state.scoreB);
+  let winnerReached=false;
+  const mode=String(state.winby||'slide1');
+  if(mode==='sudden'){
+    winnerReached=hi>=state.target;
+  }else if((state.target===11&&mode==='slide1'&&state.scoreA>=10&&state.scoreB>=10)||(state.target===15&&mode==='slide1'&&state.scoreA>=14&&state.scoreB>=14)){
+    winnerReached=hi>=state.target+1;
+  }else if((state.target===11&&mode==='slide2'&&state.scoreA>=11&&state.scoreB>=11)||(state.target===15&&mode==='slide2'&&state.scoreA>=15&&state.scoreB>=15)){
+    winnerReached=hi>=state.target+2;
+  }else{
+    winnerReached=hi>=state.target&&hi-lo>=2;
+  }
+  if(winnerReached)prepareFinish(t);
+}
+function prepareFinish(winner){
+  stopOfficialMatchTimer();
+  state.pendingWinner=winner;
+  state.pendingFinalScore=[state.scoreA,state.scoreB];
+  document.getElementById('finishBanner').classList.remove('hidden');
+  document.getElementById('finishWinner').textContent=
+    (winner==='A'?state.a:state.b)+' WINS';
+  document.getElementById('finishScore').textContent=state.scoreA+'–'+state.scoreB;
+  document.getElementById('finishButton').focus();
+}
+function undo(){if(state.pendingWinner||state.paused)return;const last=state.history.pop();if(!last)return;if(Array.isArray(last)){[state.scoreA,state.scoreB]=last;}else{state.scoreA=last.a;state.scoreB=last.b;state.serverTeam=last.serverTeam;state.serverPlayer=last.serverPlayer;state.receiverTeam=last.receiverTeam;state.receiverPlayer=last.receiverPlayer;state.serverNumber=last.serverNumber||1;updateServingDisplay();}updateScore()}
+function finishMatch(){
+  if(!state.pendingWinner||state.matchSaved)return;
+  state.games.push({game:state.game,a:state.scoreA,b:state.scoreB,winner:state.pendingWinner});
+  const totalA=state.games.filter(g=>g.winner==='A').length;
+  const totalB=state.games.filter(g=>g.winner==='B').length;
+  const winner=totalA===totalB?state.pendingWinner:(totalA>totalB?'A':'B');
+  const rec={...state,finalA:totalA,finalB:totalB,matchWinner:winner,
+    completedAt:new Date().toISOString(),
+    timeouts:{A:timeoutState.A.used,B:timeoutState.B.used},
+    injuryTimeouts:{A:injuryState.A.used,B:injuryState.B.used}};
+  const arr=matches();arr.unshift(rec);saveMatches(arr);
+  state.matchSaved=true;
+  state.savedMatchRecord=rec;
+  localStorage.setItem('maddy_last_finished_match',JSON.stringify(rec));
+  const saveBtn=document.getElementById('maddy-save-finish-btn');
+  if(saveBtn){saveBtn.textContent='MATCH SAVED';saveBtn.disabled=true;}
+  const sendPrompt=document.getElementById('maddy-send-result-prompt');
+  if(sendPrompt)sendPrompt.classList.remove('hidden');
+  const sendStatus=document.getElementById('maddy-send-result-status');
+  if(sendStatus)sendStatus.textContent=rec.onlineMatchId?'Ready to send to Tournament Desk.':'No online Tournament Desk match link was detected. This match is saved locally.';
+  const finishButton=document.getElementById('finishButton');
+  if(finishButton){finishButton.disabled=true;finishButton.textContent='MATCH SAVED';}
+}
+
+function sendMaddyMatchResult(){
+  const rec=(state&&state.savedMatchRecord)||JSON.parse(localStorage.getItem('maddy_last_finished_match')||'null');
+  const id=(state&&state.onlineMatchId)||window.__MADDY_ONLINE_MATCH_ID||localStorage.getItem('maddy_online_match_id')||(rec&&rec.onlineMatchId)||'';
+  const btn=document.getElementById('maddy-send-result-btn');
+  const status=document.getElementById('maddy-send-result-status');
+  const setStatus=(message,color)=>{if(status){status.textContent=message;status.style.color=color||'#a3b2a8';}};
+  if(!rec){setStatus('No saved match result was found.','#ff9b9b');return;}
+  if(!id){setStatus('This match has no online Match ID. Receive the assigned online match from Tournament Desk before scoring.','#ffb4b4');return;}
+  if(!window.__MADDY_FIREBASE_READY||typeof firebase==='undefined'||!firebase.database){setStatus('Firebase is still connecting. Please try again.','#ffb4b4');return;}
+  if(btn){btn.disabled=true;btn.textContent='SENDING...';}
+  const result={
+    matchId:id,matchNumber:rec.matchNo||'',event:rec.event||'',division:rec.division||'',court:rec.court||'',
+    teamA:rec.a||'',teamB:rec.b||'',scoreA:Number(rec.scoreA||0),scoreB:Number(rec.scoreB||0),
+    finalA:Number(rec.finalA||0),finalB:Number(rec.finalB||0),matchWinner:rec.matchWinner||'',
+    winnerName:rec.matchWinner==='A'?(rec.a||'Team A'):(rec.b||'Team B'),
+    games:Array.isArray(rec.games)?rec.games:[],completedAt:rec.completedAt||new Date().toISOString(),
+    timeouts:rec.timeouts||{},injuryTimeouts:rec.injuryTimeouts||{}
+  };
+  const ref=firebase.database().ref('matches/'+id);
+  ref.once('value').then(function(snapshot){
+    if(!snapshot.exists())throw new Error('The assigned online match was not found.');
+    return ref.update({status:'completed',result:result,resultSentAt:new Date().toISOString(),resultSource:'MADDY PADDLES UMPIRE SCORESHEET'});
+  }).then(function(){
+    if(btn){btn.disabled=true;btn.textContent='✓ RESULT SENT';}
+    setStatus('RESULT UPLOADED TO FIREBASE SUCCESSFULLY. Tournament Desk sync can now read this result.','#c7f36b');
+  }).catch(function(err){
+    console.error('MADDY result upload failed:',err);
+    if(btn){btn.disabled=false;btn.textContent='RETRY SEND RESULT';}
+    setStatus('SEND FAILED: '+(err&&err.message?err.message:String(err)),'#ff9b9b');
+  });
+}
+
+let officialMatchTimerId=null;
+function startOfficialMatchTimer(){
+  if(!state || state.matchTimerStarted===true) return;
+  state.matchTimerStarted=true;
+  state.matchTimerStart=Date.now();
+  state.matchTimerElapsed=0;
+  const btn=document.getElementById('startMatchTimerBtn');
+  if(btn){
+    btn.textContent='⏱ RUNNING';
+    btn.disabled=true;
+    btn.classList.add('locked');
+  }
+  updateOfficialMatchTimer();
+  officialMatchTimerId=setInterval(updateOfficialMatchTimer,250);
+}
+function updateOfficialMatchTimer(){
+  if(!state || state.matchTimerStarted!==true) return;
+  state.matchTimerElapsed=Math.max(0,Date.now()-state.matchTimerStart);
+  const total=Math.floor(state.matchTimerElapsed/1000);
+  const h=Math.floor(total/3600),m=Math.floor((total%3600)/60),sec=total%60;
+  const el=document.getElementById('matchTimer');
+  if(el) el.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function stopOfficialMatchTimer(){
+  if(officialMatchTimerId){clearInterval(officialMatchTimerId);officialMatchTimerId=null;}
+  if(state && state.matchTimerStarted===true){
+    updateOfficialMatchTimer();
+    state.matchDurationMs=state.matchTimerElapsed||0;
+    const total=Math.floor((state.matchDurationMs||0)/1000);
+    state.matchDuration=String(Math.floor(total/3600)).padStart(2,'0')+':'+String(Math.floor((total%3600)/60)).padStart(2,'0')+':'+String(total%60).padStart(2,'0');
+  }
+}
+function resetOfficialMatchTimer(){
+  if(officialMatchTimerId){clearInterval(officialMatchTimerId);officialMatchTimerId=null;}
+  if(state){
+    state.matchTimerStarted=false;
+    state.matchTimerStart=null;
+    state.matchTimerElapsed=0;
+    state.matchDurationMs=0;
+    state.matchDuration='00:00:00';
+  }
+  const el=document.getElementById('matchTimer');if(el)el.textContent='00:00:00';
+  const btn=document.getElementById('startMatchTimerBtn');
+  if(btn){btn.textContent='▶ START';btn.disabled=false;btn.classList.remove('locked');}
+}
+
+function restoreUmpireReceiveButton(){
+  const home=document.getElementById('umpireHome');
+  const received=document.getElementById('umpireReceived');
+  if(home) home.style.display='';
+  if(received) received.classList.add('hidden');
+  window.pendingUmpireMatch=null;
+  localStorage.removeItem('picklescore_received_match');
+}
+function endMatch(auto=false){
+  stopOfficialMatchTimer();
+  if(!auto&&!confirm('Save this match and end scoring?'))return;
+  const games=state.games||[];if(state.pendingWinner){finishMatch();return}if(!games.length&&state.scoreA===0&&state.scoreB===0)return;
+  const totalA=games.filter(g=>g.winner==='A').length,totalB=games.filter(g=>g.winner==='B').length;
+  const winner=totalA===totalB?(state.scoreA>state.scoreB?'A':state.scoreB>state.scoreA?'B':null):(totalA>totalB?'A':'B');
+  const rec={...state,finalA:totalA,finalB:totalB,matchWinner:winner,completedAt:new Date().toISOString(),timeouts:{A:timeoutState.A.used,B:timeoutState.B.used},
+    injuryTimeouts:{A:injuryState.A.used,B:injuryState.B.used}};
+  const arr=matches();arr.unshift(rec);saveMatches(arr);alert('Match saved to offline history.');state={};show('setup');
+}
+  restoreUmpireReceiveButton();
+function updateScore(){
+  document.getElementById('scoreA').textContent=state.scoreA??0;document.getElementById('scoreB').textContent=state.scoreB??0;
+  if(!state.a)return;
+  document.getElementById('teamAName').textContent=state.a;document.getElementById('teamBName').textContent=state.b;
+  document.getElementById('matchMeta').textContent='MATCH '+state.matchNo+' • '+state.event+' • '+state.division+' • '+state.court;
+  document.getElementById('servingMeta').textContent='FIRST SERVER • '+(state.firstServer||'—')+'   •   FIRST RECEIVER • '+(state.firstReceiver||'—');
+  document.getElementById('gameMeta').textContent='GAME '+state.game+' • FIRST TO '+state.target+' • WIN BY '+state.winby;
+}
+function startTimeout(team){
+  const s=timeoutState[team];
+  if(s.used||s.running||state.paused)return;
+  s.used=true;s.running=true;s.end=Date.now()+60000;
+  beginPause('TIME OUT — '+team,60000,'timeout',team);
+  clearInterval(timerIntervals[team]);
+  timerIntervals[team]=setInterval(()=>updateTimeoutTimer(team),250);
+}
+function beginPause(reason,duration,type,team){
+  state.paused=true;state.pauseType=type;state.pauseTeam=team;state.pauseEnd=Date.now()+duration;
+  document.getElementById('pauseBanner').classList.remove('hidden');
+  document.getElementById('pauseReason').textContent=reason;
+  updatePauseCountdown();updateControlFreeze();
+}
+function updatePauseCountdown(){
+  if(!state.paused)return;
+  const remaining=Math.max(0,state.pauseEnd-Date.now());
+  const seconds=Math.ceil(remaining/1000),m=Math.floor(seconds/60),sec=String(seconds%60).padStart(2,'0');
+  document.getElementById('pauseCountdown').textContent=m+':'+sec;
+  if(remaining<=0){resumePlay();return;}
+  setTimeout(updatePauseCountdown,250);
+}
+function resumePlay(){
+  if(!state.paused)return;
+  // End the active timeout immediately. It remains USED, and all remaining time is discarded.
+  if(state.pauseType==='timeout' && state.pauseTeam){
+    const s=timeoutState[state.pauseTeam];
+    s.running=false;s.end=0;
+    clearInterval(timerIntervals[state.pauseTeam]);
+    const timer=document.getElementById('timer'+state.pauseTeam);
+    if(timer)timer.textContent='';
+  }
+  if(state.pauseType==='injury' && state.pauseTeam){
+    const s=injuryState[state.pauseTeam];
+    s.running=false;s.end=0;
+    clearInterval(injuryIntervals[state.pauseTeam]);
+    const timer=document.getElementById('injuryTimer'+state.pauseTeam);
+    if(timer)timer.textContent='';
+  }
+  state.paused=false;state.pauseType=null;state.pauseTeam=null;state.pauseEnd=0;
+  document.getElementById('pauseCountdown').textContent='0:00';
+  document.getElementById('pauseBanner').classList.add('hidden');
+  updateControlFreeze();updateTimeoutUI();updateInjuryUI();
+}
+function updateControlFreeze(){
+  const disabled=!!state.paused;
+  document.querySelectorAll('#score .scorebtn, #score .row .btn').forEach(btn=>{
+    if(btn.id==='finishButton')return;
+    btn.disabled=disabled;btn.classList.toggle('disabled',disabled);
+  });
+  ['roleA','playerA','roleB','playerB','firstServer','firstReceiver'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.disabled=disabled;el.classList.toggle('disabled',disabled);}
+  });
+  ['timeoutA','timeoutB','injuryA','injuryB'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&disabled){el.disabled=true;el.classList.add('disabled');}
+  });
+}
+function updateTimeoutTimer(team){
+  const s=timeoutState[team];
+  if(!s.running){const timer=document.getElementById('timer'+team);if(timer)timer.textContent='';return;}
+  const remaining=Math.max(0,s.end-Date.now());
+  const seconds=Math.ceil(remaining/1000),m=Math.floor(seconds/60),sec=String(seconds%60).padStart(2,'0');
+  document.getElementById('timer'+team).textContent=remaining>0?'⏱ '+m+':'+sec:'';
+  if(remaining<=0){s.running=false;clearInterval(timerIntervals[team]);updateTimeoutUI();if(state.paused&&state.pauseType==='timeout'&&state.pauseTeam===team)resumePlay()}
+}
+function startInjuryTimeout(team){
+  const s=injuryState[team];
+  if(s.used||s.running||state.paused)return;
+  s.used=true;s.running=true;s.end=Date.now()+300000;
+  beginPause('🩹 INJURY TIMEOUT — '+team,300000,'injury',team);
+  clearInterval(injuryIntervals[team]);
+  injuryIntervals[team]=setInterval(()=>updateInjuryTimer(team),250);
+}
+function updateInjuryTimer(team){
+  const s=injuryState[team];
+  if(!s.running){const timer=document.getElementById('injuryTimer'+team);if(timer)timer.textContent='';return;}
+  const remaining=Math.max(0,s.end-Date.now());
+  const seconds=Math.ceil(remaining/1000),m=Math.floor(seconds/60),sec=String(seconds%60).padStart(2,'0');
+  document.getElementById('injuryTimer'+team).textContent=remaining>0?'🩹 '+m+':'+sec:'';
+  if(remaining<=0){
+    s.running=false;clearInterval(injuryIntervals[team]);updateInjuryUI();if(state.paused&&state.pauseType==='injury'&&state.pauseTeam===team)resumePlay();
+  }
+}
+function updateInjuryUI(){
+  ['A','B'].forEach(t=>{
+    const btn=document.getElementById('injury'+t),s=injuryState[t];
+    if(!btn)return;
+    btn.disabled=s.used;btn.classList.toggle('disabled',s.used);
+    btn.textContent=s.used?(s.running?'🩹 INJURY TIMEOUT — RUNNING':'🩹 INJURY TIMEOUT — USED'):'🩹 INJURY TIMEOUT — 5:00';
+    if(s.running)updateInjuryTimer(t);else if(!s.used)document.getElementById('injuryTimer'+t).textContent='';
+  });
+}
+function updateTimeoutUI(){
+  ['A','B'].forEach(t=>{
+    const btn=document.getElementById('timeout'+t),s=timeoutState[t];
+    btn.disabled=s.used;btn.classList.toggle('disabled',s.used);
+    btn.textContent=s.used?(s.running?'TIME OUT — RUNNING':'TIME OUT — USED'):'TIME OUT — 1:00';
+    if(s.running)updateTimeoutTimer(t);else if(!s.used)document.getElementById('timer'+t).textContent='';
+  });
+}
+function deleteHistory(){
+  const arr=matches();
+  if(!arr.length){alert('There is no match history to delete.');return}
+  if(!confirm('Delete ALL saved match history? This cannot be undone.'))return;
+  localStorage.removeItem(DB_KEY);
+  renderHistory();
+  alert('Match history deleted.');
+}
+function renderHistory(){
+  const list=document.getElementById('historyList'),arr=matches();
+  if(!arr.length){list.innerHTML='<p style="color:#6b7280">No completed matches yet.</p>';return}
+  list.innerHTML=arr.map(m=>{
+    const A=m.a,B=m.b,scores=(m.games||[]).map(g=>g.a+'–'+g.b).join(', ');
+    return `<div class="history-item"><strong>MATCH ${m.matchNo}</strong><br>${A} <b>vs</b> ${B}<br><span class="pill">${scores||'No completed game'}</span><br><span class="winner">Winner: ${m.matchWinner==='A'?A:m.matchWinner==='B'?B:'Undetermined'}</span><br><small>${m.event} • ${m.division} • ${m.court}<br>Duration: ${m.matchDuration||'00:00:00'}<br>First Server: ${m.firstServer||'—'} • First Receiver: ${m.firstReceiver||'—'}<br>${new Date(m.completedAt||m.date).toLocaleString()} • Timeouts: Team A ${m.timeouts?.A?'Used':'Not used'}, Team B ${m.timeouts?.B?'Used':'Not used'} • Injury: Team A ${m.injuryTimeouts?.A?'Used':'Not used'}, Team B ${m.injuryTimeouts?.B?'Used':'Not used'}</small></div>`
+  }).join('');
+}
+
+show('setup');
+show('setup');
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+
+<div id="assignmentModal" class="modal hidden">
+  <div class="card modal-card">
+    <div class="modal-title">📤 MATCH ASSIGNMENT</div>
+    <div id="assignmentSummary" class="assignment-summary"></div>
+    <div class="match-link-box"><a id="assignmentLinkAnchor" class="assignment-link-anchor" href="#">📋 COPY / SHARE MATCH PACKAGE</a><input id="assignmentLink" class="assignment-link" readonly onclick="this.select()"><button type="button" class="btn primary" onclick="copyMatchLink()">📋 COPY MATCH PACKAGE</button></div><div class="assignment-help">Open the link here to test it, or copy it and send it to the umpire.</div>
+    <div class="meta" style="text-align:center">Copy the Match Link and send it to the umpire.</div>
+    <div id="assignmentId" class="assignment-id"></div>
+    <button class="btn light" onclick="closeAssignment()">CANCEL</button>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const encoded=new URLSearchParams(window.location.search).get('match');
+  if(encoded){
+    const payload=decodeMatchPackage(encoded);
+    if(payload && payload.type==='PickleScoreMatch'){
+      fillSetupFromAssignment(payload);
+      setTimeout(()=>{
+        if(confirm('MATCH RECEIVED\n\nMatch #'+(payload.matchNumber||'—')+'\n'+(payload.teamA||'—')+' VS '+(payload.teamB||'—')+'\n\nAccept and start this match?')) startMatch();
+        history.replaceState({},document.title,window.location.pathname);
+      },100);
+    }
+  }
+});
+</script>
+
+
+
+
+<script id="maddy-paddles-team-score-animation-js">
+(function(){
+  const scoreHints = ['score','points','team-score','home-score','away-score',
+                      'left-score','right-score','team1-score','team2-score'];
+
+  function isScoreElement(el){
+    if(!el || el.nodeType !== 1) return false;
+    const c=((el.className||'')+' '+(el.id||'')).toLowerCase();
+    if(scoreHints.some(h=>c.includes(h))) return true;
+    const t=(el.textContent||'').trim();
+    return /^\d{1,3}$/.test(t) && el.children.length===0;
+  }
+
+  function findScoreAncestor(el){
+    let cur=el;
+    for(let i=0;i<5 && cur;i++,cur=cur.parentElement){
+      if(isScoreElement(cur)) return cur;
+    }
+    return null;
+  }
+
+  function animate(el){
+    if(!el) return;
+    el.classList.remove('maddy-score-animate');
+    void el.offsetWidth;
+    el.classList.add('maddy-score-animate');
+    setTimeout(()=>el.classList.remove('maddy-score-animate'),320);
+  }
+
+  let previous = new WeakMap();
+
+  function snapshot(root){
+    root.querySelectorAll('*').forEach(el=>{
+      if(isScoreElement(el)){
+        previous.set(el,(el.textContent||'').trim());
+      }
+    });
+  }
+
+  function start(){
+    if(!document.body) return;
+    snapshot(document.body);
+
+    const observer=new MutationObserver(records=>{
+      const changed=new Set();
+
+      for(const r of records){
+        if(r.type==='characterData'){
+          const el=findScoreAncestor(r.target.parentElement);
+          if(el) changed.add(el);
+        }else if(r.type==='childList'){
+          const el=findScoreAncestor(r.target);
+          if(el) changed.add(el);
+          r.addedNodes.forEach(n=>{
+            if(n.nodeType===1){
+              const candidate=findScoreAncestor(n);
+              if(candidate) changed.add(candidate);
+            }
+          });
+        }
+      }
+
+      changed.forEach(el=>{
+        const now=(el.textContent||'').trim();
+        const old=previous.get(el);
+        if(old!==undefined && now!==old && /^\d{1,3}$/.test(now)){
+          // Animate only the score element whose displayed value changed.
+          animate(el);
+        }
+        previous.set(el,now);
+      });
+    });
+
+    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',start,{once:true});
+  }else start();
+})();
+</script>
+
+
+<script id="hide-received-match-after-start">
+(function(){
+  function findStartButton(){
+    const buttons = Array.from(document.querySelectorAll('button'));
+    return buttons.find(b => /start\s*match/i.test((b.textContent||'').trim()));
+  }
+
+  function findReceivedSection(){
+    const all = Array.from(document.querySelectorAll('section,div,article,fieldset'));
+    return all.find(el => {
+      const text = (el.textContent||'').trim();
+      return /received\s*match/i.test(text) &&
+             el.querySelector('button') &&
+             /start\s*match/i.test(el.textContent||'');
+    });
+  }
+
+  function hideReceived(){
+    const section = findReceivedSection();
+    if(section){
+      section.style.display = 'none';
+      section.setAttribute('data-received-match-hidden','true');
+    }
+  }
+
+  function bind(){
+    const btn = findStartButton();
+    if(!btn || btn.dataset.receivedHideBound) return;
+    btn.dataset.receivedHideBound = 'true';
+    btn.addEventListener('click', function(){
+      // Let the existing start-match logic run first.
+      setTimeout(hideReceived, 0);
+    });
+  }
+
+  const observer = new MutationObserver(bind);
+  observer.observe(document.body,{childList:true,subtree:true});
+  bind();
+})();
+</script>
+
+
+
+
+
+<script id="ios-service-worker-update">
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.getRegistration('./').then(function(reg){
+      if(reg && reg.update) reg.update().catch(function(){});
+    }).catch(function(){});
+  });
+})();
+</script>
+
+<script id="maddy-paddles-short-qr-library">
+var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});
+</script><script id="maddy-paddles-short-qr-receive">
+(function(){
+  var PREFIX='MPR1.';
+
+  function decodePayload(payload){
+    payload=(payload||'').trim();
+    if(payload.indexOf(PREFIX)!==0) throw new Error('Not a MADDY PADDLES QR package.');
+    var compressed=payload.substring(PREFIX.length);
+    var decoded=LZString.decompressFromEncodedURIComponent(compressed);
+    if(!decoded) throw new Error('Could not decode the QR package.');
+    return decoded;
+  }
+
+  window.receiveMaddyQRText=function(payload){
+    try{
+      var pkg=decodePayload(payload);
+      var input=document.getElementById('matchPackage') ||
+                document.getElementById('matchLink') ||
+                document.querySelector('textarea');
+
+      if(input){
+        input.value=pkg;
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+        input.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+
+      var receiveButtons=document.querySelectorAll('button');
+      for(var i=0;i<receiveButtons.length;i++){
+        var t=(receiveButtons[i].textContent||'').toUpperCase();
+        if(t.indexOf('RECEIVE MATCH')>=0 && t.indexOf('QR')<0){
+          receiveButtons[i].click();
+          return true;
+        }
+      }
+
+      alert('QR decoded successfully. The Match Package was placed into the receive field.');
+      return true;
+    }catch(e){
+      alert(e.message || 'Invalid MADDY PADDLES QR code.');
+      return false;
+    }
+  };
+
+  function addQRButton(){
+    if(document.getElementById('maddy-qr-receive-button')) return true;
+
+    var buttons=document.querySelectorAll('button');
+    var target=null;
+    for(var i=0;i<buttons.length;i++){
+      var t=(buttons[i].textContent||'').toUpperCase();
+      if(t.indexOf('RECEIVE MATCH')>=0 && t.indexOf('QR')<0){
+        target=buttons[i];
+        break;
+      }
+    }
+    if(!target) return false;
+
+    var btn=document.createElement('button');
+    btn.id='maddy-qr-receive-button';
+    btn.type='button';
+    btn.textContent='SCAN QR CODE';
+    btn.style.cssText='display:block;width:100%;margin-top:10px;padding:12px 16px;border:2px solid #b8ff00;border-radius:12px;background:#111;color:#fff;font-weight:800;cursor:pointer;';
+    btn.onclick=function(){
+      alert('For this first test, scan the QR with the phone camera and copy the scanned MPR1 text. Then paste it into the Umpire Match Package receive field. We will connect direct camera scanning in the next step.');
+    };
+
+    target.parentNode.insertBefore(btn,target.nextSibling);
+    return true;
+  }
+
+  var tries=0;
+  var timer=setInterval(function(){
+    tries++;
+    if(addQRButton() || tries>=80) clearInterval(timer);
+  },250);
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',addQRButton,{once:true});
+  }else{
+    addQRButton();
+  }
+})();
+</script><!-- MADDY_FIREBASE_UMPIRE_OPTIONS_START -->
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-database-compat.js"></script>
+<script>
+(function(){
+  if(window.__MADDY_FIREBASE_READY) return;
+  var config={
+    apiKey:"AIzaSyBxoHf8NsfpQvi_3rCoXmsKFuC3ZJZRKGI",
+    authDomain:"maddy-paddles-scoresheet.firebaseapp.com",
+    databaseURL:"https://maddy-paddles-scoresheet-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:"maddy-paddles-scoresheet",
+    storageBucket:"maddy-paddles-scoresheet.firebasestorage.app",
+    messagingSenderId:"524886957723",
+    appId:"1:524886957723:web:20caf51b79703e"
+  };
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(config);
+    window.__MADDY_FIREBASE_READY=true;
+  }catch(e){console.error(e);}
+})();
+</script>
+<!-- MADDY_FIREBASE_UMPIRE_OPTIONS_END -->
+<!-- MADDY_PHASE5_4_UMPIRE_RECEIVE_OPTIONS_START -->
+<style>
+#maddy-receive-options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:14px 0;
+}
+#maddy-receive-options button{
+  width:100%;
+  padding:12px 14px;
+  font-weight:800;
+  cursor:pointer;
+}
+#maddy-link-panel{
+  display:none;
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #888;
+}
+#maddy-link-panel input{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px;
+  margin-bottom:8px;
+}
+</style>
+
+<script>
+(function(){
+"use strict";
+
+function allTextButtons(){
+  return document.querySelectorAll("button,input[type=button],input[type=submit]");
+}
+
+function isReceiveText(el){
+  var t=(el.textContent||el.value||"").trim().toUpperCase();
+  return t==="RECEIVE MATCH" || t.indexOf("RECEIVE MATCH")>=0;
+}
+
+function getReceiveButton(){
+  var els=allTextButtons();
+  for(var i=0;i<els.length;i++){
+    if(isReceiveText(els[i])) return els[i];
+  }
+  return null;
+}
+
+function getPackageInput(){
+  var els=document.querySelectorAll("input,textarea");
+  for(var i=0;i<els.length;i++){
+    var n=((els[i].id||"")+" "+(els[i].name||"")+" "+(els[i].placeholder||"")).toLowerCase();
+    if(n.indexOf("receive")>=0 || n.indexOf("package")>=0 || n.indexOf("match")>=0) return els[i];
+  }
+  return null;
+}
+
+function openReceive(){
+  var b=getReceiveButton();
+  if(b) b.click();
+}
+
+function scanQR(){
+  try{
+    var plugins=(window.Capacitor && window.Capacitor.Plugins) ? window.Capacitor.Plugins : null;
+    var scanner=plugins && (plugins.CapacitorBarcodeScanner || plugins.BarcodeScanner);
+    if(!scanner || !scanner.scanBarcode){
+      alert("QR scanner is not available in this app build yet.");
+      return;
+    }
+
+    scanner.scanBarcode({
+      hint:0,
+      scanInstructions:"Scan the MADDY PADDLES match QR code",
+      scanOrientation:1,
+      cameraDirection:1,
+      android:{scanningLibrary:"zxing"}
+    }).then(function(result){
+      var value=(result && (result.ScanResult || result.scanResult || result.rawValue)) || "";
+      value=(value+"").trim();
+      if(!value){
+        alert("No QR code was scanned.");
+        return;
+      }
+      receiveFromLink(value);
+    }).catch(function(err){
+      console.error(err);
+      var msg=(err && err.message) ? err.message : (err+"");
+      if(msg.toLowerCase().indexOf("cancel")>=0){ return; }
+      alert("QR scanning failed.\n\n"+msg);
+    });
+  }catch(e){
+    console.error(e);
+    alert("QR scanning failed.\n\n"+(e && e.message ? e.message : e));
+  }
+}
+
+function receiveFromLink(link){
+  link=(link||"").trim();
+  if(!link){alert("Please enter the match link or Match ID.");return;}
+
+  var id="";
+  if(/^[A-Za-z0-9]{8}$/.test(link)){
+    id=link.toUpperCase();
+  }else{
+    try{
+      id=new URL(link).searchParams.get("match")||"";
+    }catch(e){}
+    if(!id){
+      var mm=link.match(/[?&]match=([A-Za-z0-9]{8})/i);
+      if(mm) id=mm[1].toUpperCase();
+    }
+  }
+
+  if(!id){
+    alert("Please enter a valid 8-character Match ID, such as YTF3FZES, or the full online match link.");
+    return;
+  }
+
+  if(!window.__MADDY_FIREBASE_READY || typeof firebase==="undefined"){
+    alert("Online connection is still loading. Please try again in a moment.");
+    return;
+  }
+
+  firebase.database().ref("matches/"+id).once("value").then(function(snap){
+    var data=snap.val();
+    if(!data){
+      alert("Match "+id+" was not found online.");
+      return;
+    }
+
+    var raw=data.package || data.matchPackage || data;
+
+    // The Tournament Desk normally stores the original Match Package string.
+    // Decode it using the existing Umpire decoder without calling the old manual prompt.
+    var payload=null;
+    if(typeof raw==="object" && raw){
+      payload=raw;
+    }else if(typeof raw==="string"){
+      try{
+        payload=decodeMatchPackage(raw);
+      }catch(e){
+        payload=null;
+      }
+    }
+
+    if(!payload || payload.type!=="PickleScoreMatch"){
+      alert("The online match was found, but its Match Package could not be decoded.");
+      return;
+    }
+
+    // Use the SAME received-match state and review screen as the original workflow,
+    // but do not call receiveMatchPackage(), because that would open the manual paste prompt.
+    window.pendingUmpireMatch=payload;
+    window.__MADDY_ONLINE_MATCH_ID=id;
+    localStorage.setItem("maddy_online_match_id",id);
+    payload._maddyOnlineMatchId=id;
+    localStorage.setItem("picklescore_received_match",JSON.stringify(payload));
+
+    var d=document.getElementById("umpireMatchDetails");
+    if(d){
+      d.innerHTML='<div class="match-line"><b>Match #:</b> '+escapeHtml(payload.matchNumber||"—")+'</div>'+
+        '<div class="match-line"><b>Division:</b> '+escapeHtml(payload.division||"—")+'</div>'+
+        '<div class="match-line"><b>Court:</b> '+escapeHtml(payload.court||"—")+'</div>'+
+        '<div class="match-line"><b>Side A:</b> '+escapeHtml(payload.teamA||"—")+'</div>'+
+        '<div class="match-line"><b>Side B:</b> '+escapeHtml(payload.teamB||"—")+'</div>'+
+        '<div class="match-line"><b>Game To:</b> '+escapeHtml(String(payload.target||"—"))+'</div>'+
+        '<div class="match-line"><b>Win By:</b> '+escapeHtml(String(payload.winBy||"—"))+'</div>';
+    }
+
+    var received=document.getElementById("umpireReceived");
+    if(received) received.classList.remove("hidden");
+
+    // Close the small online-link panel after successful retrieval.
+    var panel=document.getElementById("maddy-link-panel");
+    if(panel) panel.style.display="none";
+
+  }).catch(function(err){
+    console.error(err);
+    alert("Unable to receive the match online.\n\n"+(err&&err.message?err.message:err));
+  });
+}
+
+function addOptions(){
+  if(document.getElementById("maddy-receive-options")) return true;
+
+  var receive=getReceiveButton();
+  if(!receive || !receive.parentNode) return false;
+
+  var box=document.createElement("div");
+  box.id="maddy-receive-options";
+
+  var scan=document.createElement("button");
+  scan.type="button";
+  scan.textContent="SCAN QR CODE";
+  scan.onclick=scanQR;
+
+  var open=document.createElement("button");
+  open.type="button";
+  open.textContent="OPEN MATCH IN LINK";
+
+  var panel=document.createElement("div");
+  panel.id="maddy-link-panel";
+
+  var input=document.createElement("input");
+  input.type="text";
+  input.placeholder="Paste online match link here";
+
+  var go=document.createElement("button");
+  go.type="button";
+  go.textContent="OPEN MATCH";
+  go.onclick=function(){receiveFromLink(input.value);};
+
+  panel.appendChild(input);
+  panel.appendChild(go);
+
+  open.onclick=function(){
+    panel.style.display=panel.style.display==="none" ? "block" : "none";
+  };
+
+  box.appendChild(scan);
+  box.appendChild(open);
+  box.appendChild(panel);
+
+  // Keep the original RECEIVE MATCH control and place the new options beside it.
+  receive.parentNode.insertBefore(box,receive);
+
+  return true;
+}
+
+function wait(){
+  addOptions();
+  setTimeout(addOptions,500);
+  setTimeout(addOptions,1500);
+  setTimeout(addOptions,3000);
+}
+
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",wait);
+else wait();
+
+})();
+</script>
+<!-- MADDY_PHASE5_4_UMPIRE_RECEIVE_OPTIONS_END -->
+
+<!-- MADDY_PHASE5_5_REAL_QR_SCANNER_FIXED -->
+<script>
+(function(){
+  "use strict";
+
+  function getCapacitor(){
+    try{
+      if(window.Capacitor && window.Capacitor.Plugins) return window.Capacitor;
+      if(window.parent && window.parent.Capacitor && window.parent.Capacitor.Plugins) return window.parent.Capacitor;
+      if(window.top && window.top.Capacitor && window.top.Capacitor.Plugins) return window.top.Capacitor;
+    }catch(e){}
+    return null;
+  }
+
+  function passScannedValue(value){
+    value=(value||"").toString().trim();
+    if(!value){ alert("No QR code was scanned."); return; }
+    // Support both QR formats used by the app: compressed MPR1 packages
+    // and online match links / 8-character Match IDs.
+    if(/^MPR1\\./i.test(value) && typeof window.receiveMaddyQRText==="function"){
+      window.receiveMaddyQRText(value);
+      return;
+    }
+    var panel=document.getElementById("maddy-link-panel");
+    var inp=panel ? panel.querySelector("input") : null;
+    var go=null;
+    if(panel){
+      var btns=panel.querySelectorAll("button");
+      for(var bi=0;bi<btns.length;bi++){
+        var bt=(btns[bi].textContent||"").trim().toUpperCase();
+        if(bt==="OPEN MATCH"){ go=btns[bi]; break; }
+      }
+    }
+    if(inp && go){
+      inp.value=value;
+      inp.dispatchEvent(new Event("input",{bubbles:true}));
+      inp.dispatchEvent(new Event("change",{bubbles:true}));
+      go.click();
+    }else{
+      alert("QR scanned, but the online receive panel is not ready.");
+    }
+  }
+
+  function scanBrowserQR(){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+      alert("Camera access is unavailable. Open this Umpire app using HTTPS (GitHub Pages) in a supported browser, or use the native app scanner.");
+      return;
+    }
+
+    function loadDecoder(done){
+      if(window.jsQR){ done(); return; }
+      var script=document.createElement("script");
+      script.src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";
+      script.onload=done;
+      script.onerror=function(){
+        alert("Could not load the QR decoder. Please check your internet connection and try again.");
+      };
+      document.head.appendChild(script);
+    }
+
+    loadDecoder(function(){
+      var overlay=document.createElement("div");
+      overlay.id="maddy-browser-qr-overlay";
+      overlay.style.cssText="position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;color:#fff;font-family:Arial,sans-serif;";
+      var title=document.createElement("div");
+      title.textContent="SCAN MATCH QR CODE";
+      title.style.cssText="font-size:18px;font-weight:900;margin-bottom:12px;letter-spacing:.5px;";
+      var video=document.createElement("video");
+      video.setAttribute("playsinline","");
+      video.autoplay=true;
+      video.muted=true;
+      video.style.cssText="width:100%;max-width:520px;max-height:65vh;object-fit:cover;border:2px solid #b8ff00;border-radius:14px;background:#111;";
+      var hint=document.createElement("div");
+      hint.textContent="Hold the QR code steady inside the camera view.";
+      hint.style.cssText="font-size:13px;text-align:center;margin:12px 0;color:#ddd;";
+      var cancel=document.createElement("button");
+      cancel.type="button";
+      cancel.textContent="CANCEL SCAN";
+      cancel.style.cssText="padding:12px 22px;border:1px solid #b8ff00;border-radius:10px;background:#171717;color:#fff;font-weight:900;";
+      overlay.appendChild(title);
+      overlay.appendChild(video);
+      overlay.appendChild(hint);
+      overlay.appendChild(cancel);
+      document.body.appendChild(overlay);
+
+      var stream=null, stopped=false, raf=0;
+      var canvas=document.createElement("canvas");
+      var ctx=canvas.getContext("2d",{willReadFrequently:true});
+      function stop(){
+        stopped=true;
+        if(raf) cancelAnimationFrame(raf);
+        if(stream) stream.getTracks().forEach(function(track){track.stop();});
+        video.srcObject=null;
+        if(overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      }
+      cancel.onclick=stop;
+
+      navigator.mediaDevices.getUserMedia({
+        audio:false,
+        video:{facingMode:{ideal:"environment"}}
+      }).then(function(media){
+        if(stopped){media.getTracks().forEach(function(t){t.stop();});return;}
+        stream=media;
+        video.srcObject=stream;
+        return video.play();
+      }).then(function(){
+        if(stopped) return;
+        function tick(){
+          if(stopped) return;
+          if(video.readyState>=2 && video.videoWidth && video.videoHeight){
+            canvas.width=video.videoWidth;
+            canvas.height=video.videoHeight;
+            ctx.drawImage(video,0,0,canvas.width,canvas.height);
+            var frame=ctx.getImageData(0,0,canvas.width,canvas.height);
+            var code=window.jsQR(frame.data,frame.width,frame.height,{inversionAttempts:"attemptBoth"});
+            if(code && code.data){
+              var value=code.data;
+              stop();
+              passScannedValue(value);
+              return;
+            }
+          }
+          raf=requestAnimationFrame(tick);
+        }
+        tick();
+      }).catch(function(err){
+        stop();
+        var msg=(err && err.message) ? err.message : String(err||"");
+        alert("Could not open the camera. Please allow camera permission and try again.\n\n"+msg);
+      });
+    });
+  }
+
+  function scanRealQR(){
+    try{
+      var cap=getCapacitor();
+      var plugins=cap && cap.Plugins ? cap.Plugins : null;
+      var scanner=plugins && (plugins.CapacitorBarcodeScanner || plugins.BarcodeScanner);
+      if(scanner && scanner.scanBarcode){
+        scanner.scanBarcode({
+          hint:0,
+          scanInstructions:"Scan the MADDY PADDLES match QR code",
+          scanOrientation:1,
+          cameraDirection:1,
+          android:{scanningLibrary:"zxing"}
+        }).then(function(result){
+          var value=(result && (result.ScanResult || result.scanResult || result.rawValue)) || "";
+          if(value) passScannedValue(value);
+          else alert("No QR code was scanned.");
+        }).catch(function(err){
+          var msg=(err && err.message) ? err.message : String(err||"");
+          if(msg.toLowerCase().indexOf("cancel")>=0) return;
+          console.warn("Native QR scanner unavailable; using browser camera.",err);
+          scanBrowserQR();
+        });
+        return;
+      }
+      scanBrowserQR();
+    }catch(e){
+      console.warn("Native QR scanner unavailable; using browser camera.",e);
+      scanBrowserQR();
+    }
+  }
+
+  window.addEventListener("message",function(ev){
+    try{
+      var data=ev && ev.data ? ev.data : null;
+      if(!data || data.type!=="MADDY_SCAN_QR_RESULT") return;
+      if(data.error){
+        alert("QR scanning failed.\\n\\n"+data.error);
+        return;
+      }
+      passScannedValue(data.value||"");
+    }catch(e){
+      alert("QR scanning failed.\\n\\n"+(e && e.message ? e.message : e));
+    }
+  });
+
+  // Remove the old instruction-only Phase 5.5 button, if present.
+  function removeOldPlaceholder(){
+    var old=document.getElementById("maddy-qr-receive-button");
+    if(old && old.parentNode) old.parentNode.removeChild(old);
+  }
+
+  // The real Phase 5.4 Scan QR button should call the native scanner.
+  function wireRealButton(){
+    var boxes=document.querySelectorAll("#maddy-receive-options button");
+    for(var i=0;i<boxes.length;i++){
+      var t=(boxes[i].textContent||"").trim().toUpperCase();
+      if(t==="SCAN QR CODE"){
+        boxes[i].onclick=scanRealQR;
+        boxes[i].disabled=false;
+        boxes[i].style.pointerEvents="auto";
+        boxes[i].style.cursor="pointer";
+      }
+    }
+    removeOldPlaceholder();
+    return boxes.length>0;
+  }
+
+  var tries=0;
+  var timer=setInterval(function(){
+    tries++;
+    if(wireRealButton() || tries>=100) clearInterval(timer);
+  },250);
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",wireRealButton,{once:true});
+  }else{
+    wireRealButton();
+  }
+})();
+</script>
+<style id="maddy-umpire-hide-scoresheet-css">
+body.umpire-only > .app{
+  display:none;
+}
+</style><script id="maddy-umpire-hide-scoresheet-js">
+(function(){
+  "use strict";
+
+  function showScoresheet(){
+    var app=document.querySelector("body.umpire-only > .app");
+    if(app){
+      app.style.setProperty("display","block","important");
+    }
+  }
+
+  function hideScoresheet(){
+    var app=document.querySelector("body.umpire-only > .app");
+    if(app){
+      app.style.setProperty("display","none","important");
+    }
+  }
+
+  // Umpire landing: hide only the scoresheet.
+  hideScoresheet();
+
+  // ACCEPT & START MATCH: reveal the original scoresheet.
+  var originalAccept=window.acceptReceivedMatch;
+  if(typeof originalAccept==="function"){
+    window.acceptReceivedMatch=function(){
+      showScoresheet();
+      return originalAccept.apply(this,arguments);
+    };
+  }
+
+  // OPEN MATCH IN LINK / direct launch: reveal the original scoresheet.
+  var originalStart=window.startMatch;
+  if(typeof originalStart==="function"){
+    window.startMatch=function(){
+      showScoresheet();
+      return originalStart.apply(this,arguments);
+    };
+  }
+})();
+</script><style id="maddy-umpire-uniform-interface-css">
+/* =========================================================
+   MADDY PADDLES â€” Umpire interface only
+   Visual styling only. Existing functions/handlers untouched.
+   ========================================================= */
+
+body.umpire-only{
+  background:#050706!important;
+  color:#F5F7F4!important;
+}
+
+/* Clean Umpire landing card */
+body.umpire-only #umpireHome{
+  min-height:100vh;
+  box-sizing:border-box;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:26px 16px 42px!important;
+}
+
+body.umpire-only #umpireHome .umpire-home-card{
+  width:min(760px,100%)!important;
+  box-sizing:border-box;
+  margin:20px auto 0!important;
+  padding:30px 24px 26px!important;
+  background:#101513!important;
+  border:1px solid #5E6B63!important;
+  border-radius:24px!important;
+  box-shadow:0 8px 30px #00000055!important;
+  text-align:center!important;
+}
+
+/* Consistent MADDY PADDLES heading */
+body.umpire-only #umpireHome .umpire-home-card h1{
+  margin:0!important;
+  color:#F5F7F4!important;
+  font-size:clamp(30px,7vw,52px)!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:.5px!important;
+}
+
+body.umpire-only #umpireHome .maddy-umpire-role{
+  margin-top:5px!important;
+  color:#A8F000!important;
+  font-size:clamp(24px,5vw,38px)!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  letter-spacing:1px!important;
+}
+
+body.umpire-only #umpireHome .umpire-home-card > p{
+  margin:18px auto 24px!important;
+  max-width:620px;
+  color:#B8C0BA!important;
+  font-size:clamp(16px,4vw,22px)!important;
+  line-height:1.35!important;
+}
+
+/* One consistent button style for all three receiving methods */
+body.umpire-only #umpireHome #maddy-receive-options{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:12px!important;
+  margin:0!important;
+}
+
+body.umpire-only #umpireHome #maddy-receive-options button,
+body.umpire-only #umpireHome > .umpire-home-card > .btn{
+  width:100%!important;
+  min-height:58px!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+  padding:14px 18px!important;
+  border:1px solid #A8F000!important;
+  border-radius:16px!important;
+  background:#A8F000!important;
+  color:#071006!important;
+  font-size:clamp(16px,4.2vw,21px)!important;
+  font-weight:900!important;
+  letter-spacing:.2px!important;
+  box-shadow:none!important;
+}
+
+/* The original RECEIVE MATCH button uses the same visual treatment. */
+body.umpire-only #umpireHome > .umpire-home-card > .btn.primary{
+  margin-top:12px!important;
+}
+
+/* Keep the received-match panel readable without changing its behavior. */
+body.umpire-only #umpireHome .umpire-received{
+  background:#0C1712!important;
+  border-color:#5E6B63!important;
+  border-radius:16px!important;
+}
+
+body.umpire-only #umpireHome .umpire-actions button{
+  border-radius:14px!important;
+}
+
+/* Mobile spacing */
+@media(max-width:620px){
+  body.umpire-only #umpireHome{
+    padding:18px 12px 34px!important;
+  }
+
+  body.umpire-only #umpireHome .umpire-home-card{
+    margin-top:14px!important;
+    padding:26px 18px 22px!important;
+  }
+}
+</style><script id="maddy-umpire-uniform-interface-js">
+(function(){
+  "use strict";
+
+  /*
+    Interface-only patch.
+    No existing click handlers or scoring functions are replaced.
+  */
+
+  function cleanReceiveButtons(){
+    var buttons=document.querySelectorAll("#maddy-receive-options button");
+    for(var i=0;i<buttons.length;i++){
+      buttons[i].style.boxSizing="border-box";
+    }
+  }
+
+  cleanReceiveButtons();
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",cleanReceiveButtons,{once:true});
+  }
+})();
+</script><script id="maddy-umpire-startup-flicker-fix">
+(function(){
+  "use strict";
+
+  function showUmpireScoresheet(){
+    var app=document.querySelector("body.umpire-only > .app");
+    if(app){
+      app.style.setProperty("display","block","important");
+    }
+  }
+
+  /*
+    Reveal only after the existing Umpire receive/start actions are invoked.
+    This does not replace their functionality.
+  */
+  var originalAccept=window.acceptReceivedMatch;
+  if(typeof originalAccept==="function"){
+    window.acceptReceivedMatch=function(){
+      showUmpireScoresheet();
+      return originalAccept.apply(this,arguments);
+    };
+  }
+
+  var originalStart=window.startMatch;
+  if(typeof originalStart==="function"){
+    window.startMatch=function(){
+      showUmpireScoresheet();
+      return originalStart.apply(this,arguments);
+    };
+  }
+})();
+</script>
+
+</body>
+</html>
