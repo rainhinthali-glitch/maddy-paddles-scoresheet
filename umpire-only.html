@@ -1949,7 +1949,7 @@ body.umpire-only #umpireHome .umpire-received{background:#0a192b!important;borde
     <button class="btn light" onclick="resetForNewMatch(); resetOfficialMatchTimer();show('setup')">➕ New</button>
     <button class="btn light" onclick="show('score')">🏓 Score</button>
     <button class="btn light" onclick="show('history');renderHistory()">📋 History</button>
-    <button class="btn light" onclick="resetOfficialMatchTimer();show('setup')">🏠 Main Menu</button>
+    <button class="btn light" onclick="returnToUmpireMainMenu()">🏠 Main Menu</button>
   </div>
 </div>
 
@@ -3648,5 +3648,23 @@ body.umpire-only #umpireHome .umpire-actions button{
 })();
 </script>
 
+<script id="maddy-umpire-menu-return-fix">
+(function(){
+  "use strict";
+  window.returnToUmpireMainMenu=function(){
+    var home=document.getElementById("umpireHome");
+    var app=document.querySelector("body.umpire-only > .app");
+    var received=document.getElementById("umpireReceived");
+    var linkPanel=document.getElementById("maddy-link-panel");
+
+    // Return to the three receive options without resetting the active match.
+    // Keep score, serving state, match data, local storage, and timers untouched.
+    if(received) received.classList.add("hidden");
+    if(linkPanel) linkPanel.style.display="none";
+    if(home) home.style.display="";
+    if(app) app.style.setProperty("display","none","important");
+  };
+})();
+</script>
 </body>
 </html>
