@@ -1799,6 +1799,32 @@ body.umpire-only #umpireHome .umpire-received{background:#0a192b!important;borde
 #teamCardA #injuryA,#teamCardB #injuryB{grid-area:injury!important;margin:0!important;width:100%!important;min-width:0!important;min-height:48px!important;padding:9px 5px!important;font-size:clamp(9px,2.6vw,12px)!important;line-height:1.25!important}
 #teamCardA #injuryTimerA,#teamCardB #injuryTimerB{grid-area:injtimer!important;margin:0!important;min-height:15px!important;font-size:12px!important}
 </style>
+
+<style id="maddy-extra-slim-undo-button">
+/* Extra-slim full-width Undo control. Visual-only; existing undo() logic is unchanged. */
+#score .undo-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:0!important;
+  margin-top:10px!important;
+}
+#score .undo-button{
+  width:100%!important;
+  min-height:34px!important;
+  height:34px!important;
+  padding:4px 12px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  font-size:12px!important;
+  line-height:1!important;
+  letter-spacing:.045em!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+</style>
+
 </head>
 <body class="umpire-only">
 <div id="umpireHome">
@@ -1929,8 +1955,8 @@ body.umpire-only #umpireHome .umpire-received{background:#0a192b!important;borde
       <div id="serveNote" style="display:none">Starting setup</div>
     </section>
     <p class="meta" id="gameMeta">GAME 1 • IN PROGRESS</p>
-    <div class="row">
-      <button class="btn light" onclick="undo()">↩ UNDO</button>
+    <div class="row undo-row">
+      <button type="button" id="undoButton" class="btn light undo-button" onclick="undo()">↩ UNDO</button>
     </div>
   </section>
 
@@ -2142,6 +2168,9 @@ function resetForNewMatch(){
 
   // Reset match runtime state without touching persisted history.
   state={};
+  // A genuinely new match starts with a fresh official match timer.
+  // The previous match duration has already been saved with its match record.
+  resetOfficialMatchTimer();
   setScoreboardSides(false);
   const ids=['matchNo','event','court','teamA','teamB'];
   ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
