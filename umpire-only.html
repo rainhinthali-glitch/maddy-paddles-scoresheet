@@ -2493,6 +2493,39 @@ function finishMatch(){
   if(sendPrompt)sendPrompt.classList.remove('hidden');
   const sendStatus=document.getElementById('maddy-send-result-status');
   if(sendStatus)sendStatus.textContent=rec.onlineMatchId?'Ready to send to Tournament Desk.':'No online Tournament Desk match link was detected. This match is saved locally.';
+  if(rec.onlineMatchId)syncMaddyHistoryRecord(rec);
+}
+
+
+function syncMaddyHistoryRecord(rec){
+  const id=String((rec&&rec.onlineMatchId)||state.onlineMatchId||window.__MADDY_ONLINE_MATCH_ID||localStorage.getItem('maddy_online_match_id')||'');
+  const status=document.getElementById('maddy-send-result-status');
+  const setStatus=(message,color)=>{if(status){status.textContent=message;status.style.color=color||'#a3b2a8';}};
+  if(!rec||!id){setStatus('Match saved locally. No assigned online Match ID was found.','#ffb4b4');return Promise.resolve(false);}
+  if(!window.__MADDY_FIREBASE_READY||typeof firebase==='undefined'||!firebase.database){setStatus('Match saved locally. Online history sync is unavailable; use SEND RESULT to retry.','#ffb4b4');return Promise.resolve(false);}
+  const result={
+    matchId:id,matchNumber:rec.matchNo||'',event:rec.event||'',division:rec.division||'',court:rec.court||'',
+    teamA:rec.a||'',teamB:rec.b||'',scoreA:Number(rec.scoreA||0),scoreB:Number(rec.scoreB||0),
+    finalA:Number(rec.finalA||0),finalB:Number(rec.finalB||0),matchWinner:rec.matchWinner||'',
+    winnerName:rec.matchWinner==='A'?(rec.a||'Team A'):(rec.b||'Team B'),
+    games:Array.isArray(rec.games)?rec.games:[],completedAt:rec.completedAt||new Date().toISOString(),
+    timeouts:rec.timeouts||{},injuryTimeouts:rec.injuryTimeouts||{},
+    matchDuration:rec.matchDuration||'00:00:00',firstServer:rec.firstServer||'',firstReceiver:rec.firstReceiver||'',
+    historyRecord:rec
+  };
+  const ref=firebase.database().ref('matches/'+id);
+  setStatus('Match saved. Syncing complete history to Tournament Desk…','#c7f36b');
+  return ref.once('value').then(function(snapshot){
+    if(!snapshot.exists())throw new Error('The assigned online match was not found.');
+    return ref.update({status:'completed',result:result,historyRecord:rec,resultSentAt:new Date().toISOString(),resultSource:'MADDY PADDLES UMPIRE SCORESHEET'});
+  }).then(function(){
+    setStatus('✓ COMPLETE MATCH HISTORY AUTOMATICALLY SYNCED TO TOURNAMENT DESK.','#c7f36b');
+    return true;
+  }).catch(function(err){
+    console.error('MADDY automatic history sync failed:',err);
+    setStatus('AUTO SYNC FAILED: '+(err&&err.message?err.message:String(err))+'. You can retry using SEND RESULT.','#ff9b9b');
+    return false;
+  });
 }
 
 function sendMaddyMatchResult(){
@@ -2511,12 +2544,13 @@ function sendMaddyMatchResult(){
     finalA:Number(rec.finalA||0),finalB:Number(rec.finalB||0),matchWinner:rec.matchWinner||'',
     winnerName:rec.matchWinner==='A'?(rec.a||'Team A'):(rec.b||'Team B'),
     games:Array.isArray(rec.games)?rec.games:[],completedAt:rec.completedAt||new Date().toISOString(),
-    timeouts:rec.timeouts||{},injuryTimeouts:rec.injuryTimeouts||{}
+    timeouts:rec.timeouts||{},injuryTimeouts:rec.injuryTimeouts||{},matchDuration:rec.matchDuration||'00:00:00',
+    firstServer:rec.firstServer||'',firstReceiver:rec.firstReceiver||'',historyRecord:rec
   };
   const ref=firebase.database().ref('matches/'+id);
   ref.once('value').then(function(snapshot){
     if(!snapshot.exists())throw new Error('The assigned online match was not found.');
-    return ref.update({status:'completed',result:result,resultSentAt:new Date().toISOString(),resultSource:'MADDY PADDLES UMPIRE SCORESHEET'});
+    return ref.update({status:'completed',result:result,historyRecord:rec,resultSentAt:new Date().toISOString(),resultSource:'MADDY PADDLES UMPIRE SCORESHEET'});
   }).then(function(){
     if(btn){btn.disabled=true;btn.textContent='✓ RESULT SENT';}
     setStatus('RESULT UPLOADED TO FIREBASE SUCCESSFULLY. Tournament Desk sync can now read this result.','#c7f36b');
